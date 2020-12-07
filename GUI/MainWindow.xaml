@@ -80,9 +80,9 @@
         <Border Style="{StaticResource Screen}" Name="LoginScreen" Visibility="Visible">
             <StackPanel Style="{StaticResource LoginPanel}">
                 <TextBlock Text="Sign in" Style="{StaticResource HeaderBlock}" Name="Login" />
-                <TextBox Style="{StaticResource TextBoxBase}" Name="NicknameBox" Visibility="Collapsed"/>
-                <TextBox Style="{StaticResource TextBoxBase}" Name="LoginBox" />
-                <PasswordBox Style="{StaticResource TextBoxBase}" Name="PasswordBox"/>
+                <TextBox Text="Nickname" Style="{StaticResource TextBoxBase}" Name="NicknameBox" MouseDoubleClick="MouseDoubleNick" Foreground="#28F6F6F6" Visibility="Collapsed"/>
+                <TextBox Text="Login" Style="{StaticResource TextBoxBase}" Name="LoginBox" MouseDoubleClick="MouseDoubleLog" Foreground="#28F6F6F6"/>
+                <PasswordBox Password="Password" Style="{StaticResource TextBoxBase}" Name="PasswordBox" MouseDoubleClick="MouseDoublePass" Foreground="#28F6F6F6"/>
                 <Button Content="Enter" Style="{StaticResource ButtonBase}" Name="LoginButton" Click="LoginButton_Click" IsDefault="True"/>
                 <Button Content="Sign in" Style="{StaticResource ButtonBase}" Name="SigninButton" Visibility="Collapsed" Click="SigninButton_Click" Background="#312E2B" BorderBrush="#312E2B"/>
                 <Button Content="Sign up" Style="{StaticResource ButtonBase}" Name="SignupButton" Click="SignupButton_Click" Background="#312E2B" BorderBrush="#312E2B"/>
