@@ -48,9 +48,9 @@ namespace Server
                 endpoints.MapGet("/Home", async context => { await context.Response.WriteAsync("Tipo Dom, eto her ne poddergivaet russkie"); });
             });
             lifetime.ApplicationStopping.Register( () => {
-                File.WriteAllText(@"Users\nickname.json", JsonConvert.SerializeObject(Program.NickName, Formatting.Indented));
-                File.WriteAllText(@"Users\loginid.json", JsonConvert.SerializeObject(Program.LoginID, Formatting.Indented));
-                File.WriteAllText(@"Chats\chatsid.json", JsonConvert.SerializeObject(Program.ChatsID, Formatting.Indented));
+                File.WriteAllText($"{Program.config["User_directory"]}\\nickname.json", JsonConvert.SerializeObject(Program.NickName, Formatting.Indented));
+                File.WriteAllText($"{Program.config["User_directory"]}\\loginid.json", JsonConvert.SerializeObject(Program.LoginID, Formatting.Indented));
+                File.WriteAllText($"{Program.config["Chats_directory"]}\\chatsid.json", JsonConvert.SerializeObject(Program.ChatsID, Formatting.Indented));
             });       
         }
     }

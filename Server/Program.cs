@@ -16,17 +16,19 @@ namespace Server
         internal static List<string> NickName = new List<string>();
         internal static Dictionary<string, int> LoginID = new Dictionary<string, int>();
         internal static Dictionary<int, string> ChatsID = new Dictionary<int, string>();
+        internal static Dictionary<string, string> config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(@"config.json"));
         public static void Main(string[] args)
         {
-            if (!Directory.Exists(@"Users")) Directory.CreateDirectory(@"Users");
-            if (!Directory.Exists(@"Chats")) Directory.CreateDirectory(@"Chats");
-            if (!File.Exists(@"Users\nickname.json")) File.WriteAllText(@"Users\nickname.json", JsonConvert.SerializeObject(NickName, Formatting.Indented));
-            if (!File.Exists(@"Users\loginid.json")) File.WriteAllText(@"Users\loginid.json", JsonConvert.SerializeObject(LoginID, Formatting.Indented));
-            if (!File.Exists(@"Chats\chatsid.json")) File.WriteAllText(@"Chats\chatsid.json", JsonConvert.SerializeObject(ChatsID, Formatting.Indented));
 
-            NickName = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(@"Users\nickname.json"));
-            LoginID = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(@"Users\loginid.json"));
-            ChatsID = JsonConvert.DeserializeObject<Dictionary<int, string>>(File.ReadAllText(@"Chats\chatsid.json"));
+            if (!Directory.Exists(config["User_directory"])) Directory.CreateDirectory(config["User_directory"]);
+            if (!Directory.Exists(config["Chats_directory"])) Directory.CreateDirectory(config["Chats_directory"]);
+            if (!File.Exists($"{config["User_directory"]}\\nickname.json")) File.WriteAllText($"{config["User_directory"]}\\nickname.json", JsonConvert.SerializeObject(NickName, Formatting.Indented));
+            if (!File.Exists($"{config["User_directory"]}\\loginid.json")) File.WriteAllText($"{config["User_directory"]}\\loginid.json", JsonConvert.SerializeObject(LoginID, Formatting.Indented));
+            if (!File.Exists($"{config["Chats_directory"]}\\chatsid.json")) File.WriteAllText($"{config["Chats_directory"]}\\chatsid.json", JsonConvert.SerializeObject(ChatsID, Formatting.Indented));
+
+            NickName = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($"{config["User_directory"]}\\nickname.json"));
+            LoginID = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText($"{config["User_directory"]}\\loginid.json"));
+            ChatsID = JsonConvert.DeserializeObject<Dictionary<int, string>>(File.ReadAllText($"{config["Chats_directory"]}\\chatsid.json"));
 
             CreateHostBuilder(args).Build().Run();
         }
@@ -35,7 +37,9 @@ namespace Server
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                        .UseStartup<Startup>()
+                        .UseUrls(config["url_host"]);
                 });
     }
 }
