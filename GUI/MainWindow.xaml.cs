@@ -84,9 +84,26 @@ namespace MessengerApp
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
             {
-                writer.Write(JsonSerializer.Serialize(new List<string>() {LoginBox.Text, PasswordBox.Password}));
+                writer.Write(JsonSerializer.Serialize(new List<string>() { LoginBox.Text, PasswordBox.Password }));
             }
-
         }
+        private void SignupButton_Click(object sender, RoutedEventArgs e)
+        {
+            NicknameBox.Visibility=Visibility.Visible;
+            Login.Text = "Sign up";
+            SignupButton.Visibility = Visibility.Collapsed;
+            SigninButton.Visibility = Visibility.Visible;
+        }
+
+        private void SigninButton_Click(object sender, RoutedEventArgs e)
+        {
+            NicknameBox.Visibility = Visibility.Collapsed;
+            Login.Text = "Sign in";
+            SigninButton.Visibility = Visibility.Collapsed;
+            SignupButton.Visibility = Visibility.Visible;
+        }
+
+
+
     }
 }
