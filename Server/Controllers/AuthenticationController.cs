@@ -42,6 +42,7 @@ namespace Server.Controllers
         public IActionResult Auth([FromBody] List<string> request)
         {
             logger.LogInformation("Authorization starts");
+            //Переписать, не работает
             int iduser = Program.LoginID[request[0]];
             if (!System.IO.File.Exists($"{Program.config["User_directory"]}\\{iduser}.json")) return Ok(new Authanswer("Login not found"));
             User user = JsonSerializer.Deserialize<User>(System.IO.File.ReadAllText($"{Program.config["User_directory"]}\\{iduser}.json"), new JsonSerializerOptions() { WriteIndented = true });
