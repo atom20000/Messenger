@@ -19,9 +19,7 @@ using MessengerLibrary;
 
 namespace MessengerApp
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -101,6 +99,30 @@ namespace MessengerApp
             Login.Text = "Sign in";
             SigninButton.Visibility = Visibility.Collapsed;
             SignupButton.Visibility = Visibility.Visible;
+        }
+
+        private void MouseDoubleLog(object sender, RoutedEventArgs e)
+        {
+            if (LoginBox.Text=="Login")
+            {
+                LoginBox.Clear();
+            }
+        }
+
+        private void MouseDoublePass(object sender, RoutedEventArgs e)
+        {
+            if (PasswordBox.Password == "Password")
+            {
+                PasswordBox.Clear();
+            }
+        }
+
+        private void MouseDoubleNick(object sender, RoutedEventArgs e)
+        {
+            if (NicknameBox.Text=="Nickname")
+            {
+                NicknameBox.Clear();
+            }
         }
 
 
