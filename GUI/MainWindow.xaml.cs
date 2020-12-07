@@ -57,33 +57,74 @@ namespace MessengerApp
         }
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            /* if (LoginBox.Text == "admin" && PasswordBox.Password == "12345")
-             {
-                 Console.WriteLine("good");
-             }
-             else
-             {
-                 LoginMessageBlock.Text = "Wrong login or password!";
-                 LoginMessageBlock.Visibility = Visibility.Visible;
-             */
-            /*HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://55bc3afdaab6.ngrok.io/api/Authentication/reg");
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+            if(Login.Text=="Sign in")
             {
-                writer.Write(JsonSerializer.Serialize(new User("login", "password", "nickname"))); 
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://91bce97e71b7.ngrok.io/api/Authentication/auth");
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(JsonSerializer.Serialize(new List<string>() { LoginBox.Text, PasswordBox.Password }));
+                }
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Authanswer answer;
+                using (Stream stream = response.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        answer = JsonSerializer.Deserialize<Authanswer>(reader.ReadToEnd());
+                    }
+                }
+                if ((answer.Nicknameuser == "Login not found") || (answer.Nicknameuser == "Password invalid"))
+                {
+                    WarningBlock.Visibility = Visibility.Visible;
+                    WarningBlock.Text = answer.Nicknameuser;
+                }
+                else
+                {
+                    //надо чтобы информация сервера отображалась в главном окне
+                }
             }
-            */
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://55bc3afdaab6.ngrok.io/api/Authentication/auth");
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+            if(Login.Text == "Sign up")
             {
-                writer.Write(JsonSerializer.Serialize(new List<string>() { LoginBox.Text, PasswordBox.Password }));
-            }
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://91bce97e71b7.ngrok.io/api/Authentication/reg");
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                if((LoginBox.Text!="Login") && (PasswordBox.Password != "Password"))
+                {
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                    {
+                        writer.Write(JsonSerializer.Serialize(new User(LoginBox.Text, PasswordBox.Password, NicknameBox.Text)));
+                    }
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    Authanswer answer;
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            answer = JsonSerializer.Deserialize<Authanswer>(reader.ReadToEnd());
+                        }
+                    }
+                    if ((answer.Nicknameuser == "This login is registered") || (answer.Nicknameuser == "This nickname is busy"))
+                    {
+                        WarningBlock.Visibility = Visibility.Visible;
+                        WarningBlock.Text = answer.Nicknameuser;
+                    }
+                    else
+                    {
+                        WarningBlock.Visibility = Visibility.Visible;
+                        WarningBlock.Text = answer.Nicknameuser;
+                        //надо чтобы информация сервера отображалась в главном окне
+                    }
+                }
+                else
+                {
+                    WarningBlock.Visibility = Visibility.Visible;
+                    WarningBlock.Text = "Michalich zverb";
+                }
+            }           
         }
         private void SignupButton_Click(object sender, RoutedEventArgs e)
         {
