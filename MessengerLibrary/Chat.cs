@@ -9,24 +9,15 @@ namespace MessengerLibrary
     {
         public string NameChat { get; set; }
         public int IdChat { get; set; }
-        public List<Message> Messages { get; set; }
+        //public List<Message> Messages { get; set; }
         public List<int> Members { get; set; }
         public Chat(){ }
-        //internal Chat(string namechat, List<User> members)
-        //{
-        //    if (Program.Chats.Count == 0)
-        //    {
-        //        this.IdChat = 0;
-        //        this.Members = members;
-        //        this.Messages = new List<Message>();
-        //        this.NameChat = namechat;
-        //    }
-        //    List<Chat> BuffChat = Program.Chats;
-        //    BuffChat.Sort((chat1, chat2) => chat1.IdChat.CompareTo(chat2.IdChat));
-        //    this.IdChat = BuffChat.Last().IdChat + 1;
-        //    this.Members = members;
-        //    this.Messages = new List<Message>();
-        //    this.NameChat = namechat;
-        //}
+        public Chat(int idchat, string namechat, List<int> members)
+        {
+            this.IdChat = idchat;
+            this.Members = members;
+            //this.Messages = new List<Message>();
+            this.NameChat = namechat;
+        }
     }
 }

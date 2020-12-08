@@ -22,6 +22,7 @@ namespace Server
 
             if (!Directory.Exists(config["User_directory"])) Directory.CreateDirectory(config["User_directory"]);
             if (!Directory.Exists(config["Chats_directory"])) Directory.CreateDirectory(config["Chats_directory"]);
+            if (!Directory.Exists($"{config["Chats_directory"]}\\history_message")) Directory.CreateDirectory($"{config["Chats_directory"]}\\history_message");
             if (!File.Exists($"{config["User_directory"]}\\nickname.json")) File.WriteAllText($"{config["User_directory"]}\\nickname.json", JsonConvert.SerializeObject(NickName, Formatting.Indented));
             if (!File.Exists($"{config["User_directory"]}\\loginid.json")) File.WriteAllText($"{config["User_directory"]}\\loginid.json", JsonConvert.SerializeObject(LoginID, Formatting.Indented));
             if (!File.Exists($"{config["Chats_directory"]}\\chatsid.json")) File.WriteAllText($"{config["Chats_directory"]}\\chatsid.json", JsonConvert.SerializeObject(ChatsID, Formatting.Indented));

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.IO;
 using MessengerLibrary;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,9 +25,9 @@ namespace Server.Controllers
     [ApiController]
     public class MessageController : Controller
     {
-        [HttpGet("{id}")]
+        [HttpGet("chekmes/{id}")]
         [Produces("application/json")]
-        public IActionResult Get(int id, [FromBody] Getrequestmessage getrequestmessage)
+        public IActionResult Checkmes(int id, [FromBody] Getrequestmessage getrequestmessage)
         {
             //if(Program.Users.Find(user => user.Nickname == getrequestmessage.Nickname).Chats.Exists(chat => chat == id))
             //{
@@ -36,13 +37,31 @@ namespace Server.Controllers
             //}
             return Ok("Ай ай меня обманывать");
         }
-
-        [HttpPost]
-        //Тоже надо переписать 
-        public IActionResult Post([FromBody]Message message)
+        [HttpPost("sendmes/{id_chat}")]
+        public IActionResult Sendmes(int id_chat, [FromBody]Message message)
         {
-            //Message msg = JsonSerializer.Deserialize<Message>(message);
-            return Ok(message);
+            if (!Program.ChatsID.ContainsKey(id_chat)) return Ok("Not found this chat");
+            if (!JsonSerializer.Deserialize<Chat>(System.IO.File.ReadAllText($"{Program.config["Chats_directory"]}\\{id_chat}.json"), new JsonSerializerOptions() { WriteIndented = true }).Members.Exists(mem => mem == message.Sender)) return Ok("Po moemu ti ne otcuda");
+            if (!Directory.Exists($"{Program.config["Chats_directory"]}\\history_message\\{message.TimeSend.ToShortDateString()}"))
+                Directory.CreateDirectory($"{Program.config["Chats_directory"]}\\history_message\\{message.TimeSend.ToShortDateString()}");
+            System.IO.File.AppendAllText($"{Program.config["Chats_directory"]}\\history_message\\{message.TimeSend.ToShortDateString()}\\{id_chat}.json", JsonSerializer.Serialize<Message>(message));
+            // подумай AllText или AllLines 
+            return Ok("Ok pochta doshla");
+        }
+        [HttpPost("createchat")]
+        [Produces("application/json")]
+        public IActionResult CreateChat([FromBody] Chat chat)
+        {
+            if (Program.ChatsID.Count == 0) chat.IdChat = 0;
+            else chat.IdChat = Program.ChatsID.Keys.Max() + 1;
+            Program.ChatsID.Add(chat.IdChat, chat.NameChat);
+            System.IO.File.WriteAllText($"{Program.config["Chats_directory"]}\\{chat.IdChat}.json", JsonSerializer.Serialize<Chat>(chat));
+            foreach (int mem in chat.Members) {
+               User us = JsonSerializer.Deserialize<User>(System.IO.File.ReadAllText($"{Program.config["User_directory"]}\\{mem}.json"), new JsonSerializerOptions() { WriteIndented = true });
+               us.Chats.Add(chat.IdChat);
+               System.IO.File.WriteAllText($"{Program.config["User_directory"]}\\{mem}.json", JsonSerializer.Serialize(us));
+            }
+            return Ok(chat);
         }
     }
 }

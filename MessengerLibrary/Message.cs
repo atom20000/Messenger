@@ -9,8 +9,8 @@ namespace MessengerLibrary
     {
         public DateTime TimeSend { get; set; }
         public string Text { get; set; }
-        public string Sender { get; set; }
-        public Message(DateTime timesend, string text, string sender)
+        public int Sender { get; set; }
+        public Message(DateTime timesend, string text, int sender)
         {
             this.TimeSend = timesend;
             this.Text = text;
