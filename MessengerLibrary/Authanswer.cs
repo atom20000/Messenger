@@ -21,8 +21,8 @@ namespace MessengerLibrary
         {
             this.Iduser = 0;
             this.Nicknameuser = error;
-            this.Chatnames = null;
-            this.Idchats = null;
+            this.Chatnames = new List<string>();
+            this.Idchats = new List<int>();
         }
         public Authanswer(){ }
     }

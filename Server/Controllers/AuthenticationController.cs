@@ -26,7 +26,7 @@ namespace Server.Controllers
         public IActionResult Reg([FromBody] User user)
         {
             logger.LogInformation("Registration starts");
-            if (new List<string>(Program.LoginID.Keys).Exists(us => us == user.Login)) return Ok(new Authanswer("This login is registered"));
+            if (Program.LoginID.ContainsKey(user.Login)) return Ok(new Authanswer("This login is registered"));
             if (Program.NickName.Exists(us => us==user.Nickname)) return Ok(new Authanswer("This nickname is busy"));
             if(Program.LoginID.Count==0) user.IdUser = 0;  
             else user.IdUser = Program.LoginID.Values.Max() + 1;
@@ -42,9 +42,9 @@ namespace Server.Controllers
         public IActionResult Auth([FromBody] List<string> request)
         {
             logger.LogInformation("Authorization starts");
-            //Переписать, не работает
+            if(!Program.LoginID.ContainsKey(request[0])) return Ok(new Authanswer("Login not found"));
             int iduser = Program.LoginID[request[0]];
-            if (!System.IO.File.Exists($"{Program.config["User_directory"]}\\{iduser}.json")) return Ok(new Authanswer("Login not found"));
+            //if (!System.IO.File.Exists($"{Program.config["User_directory"]}\\{iduser}.json")) return Ok(new Authanswer("Login not found"));
             User user = JsonSerializer.Deserialize<User>(System.IO.File.ReadAllText($"{Program.config["User_directory"]}\\{iduser}.json"), new JsonSerializerOptions() { WriteIndented = true });
             if (user.Password == request[1]) {
                 List<string> chatnames = new List<string>();
