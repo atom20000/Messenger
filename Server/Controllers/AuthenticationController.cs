@@ -35,7 +35,7 @@ namespace Server.Controllers
             // добавить что чувак в сети 
             System.IO.File.WriteAllText($"{Program.config["User_directory"]}\\{user.IdUser.ToString()}.json", JsonSerializer.Serialize(user));
             logger.LogInformation("Registration complete");
-            return Ok(new Authanswer(user.IdUser,user.Nickname, new List<string>(),user.Chats));
+            return Ok(new Authanswer(user.IdUser,user.Nickname, new List<(int, string)>(),user.Chats));
         }
         [HttpPost("auth")]
         [Produces("application/json")]
@@ -46,10 +46,10 @@ namespace Server.Controllers
             int iduser = Program.LoginID[request[0]];
             User user = JsonSerializer.Deserialize<User>(System.IO.File.ReadAllText($"{Program.config["User_directory"]}\\{iduser}.json"), new JsonSerializerOptions() { WriteIndented = true });
             if (user.Password == request[1]) {
-                List<string> chatnames = new List<string>();
-                foreach (int chat in user.Chats) chatnames.Add(Program.ChatsID[chat]);
+                List<(int, string)> chatnames_id = new List<(int, string)>();
+                foreach (int chat in user.Chats) chatnames_id.Add((chat,Program.ChatsID[chat]));
                 logger.LogInformation("Authorization complete");
-                return Ok(new Authanswer(user.IdUser, user.Nickname, chatnames, user.Chats));
+                return Ok(new Authanswer(user.IdUser, user.Nickname, chatnames_id, user.Chats));
              }
             return Ok(new Authanswer("Password invalid"));
         }

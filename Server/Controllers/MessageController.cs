@@ -14,23 +14,23 @@ namespace Server.Controllers
     public struct Getrequestmessage
     {
         public DateTime Daterequest { get; set; }
-       public string Nickname { get; set; }
-        public Getrequestmessage(DateTime daterequest, string nickname)
+        public int IdUser { get; set; }
+        public Getrequestmessage(DateTime daterequest, int iduser)
         {
             this.Daterequest = daterequest;
-            this.Nickname = nickname;
+            this.IdUser = iduser;
         }
     }
     [Route("api/[controller]")]
     [ApiController]
     public class MessageController : Controller
     {
-        [HttpGet("chekmes/{id}")]
+        [HttpGet("chekmes/{id_chat}")]
         [Produces("application/json")]
-        public IActionResult Checkmes(int id, [FromBody] Getrequestmessage getrequestmessage)
+        public IActionResult Checkmes(int id_chat, [FromBody] Getrequestmessage getrequestmessage)
         {
-            //if(Program.Users.Find(user => user.Nickname == getrequestmessage.Nickname).Chats.Exists(chat => chat == id))
-            //{
+            if (!JsonSerializer.Deserialize<Chat>(System.IO.File.ReadAllText($"{Program.config["Chats_directory"]}\\{id_chat}.json"), new JsonSerializerOptions() { WriteIndented = true }).Members.Exists(mem => mem== getrequestmessage.IdUser)) return Ok("Ne obmanevai mena, teba net v etom chate");
+
             //    //Возвращает все сообщения надо починить, я устал
             //    List<Message> mes = Program.Chats.Find(chat => chat.IdChat == id).Messages.FindAll(mes => mes.TimeSend < getrequestmessage.Daterequest);
             //    return Ok(mes);
