@@ -33,7 +33,7 @@ namespace Server.Controllers
             Program.NickName.Add(user.Nickname);
             Program.LoginID.Add(user.Login, user.IdUser);
             // добавить что чувак в сети 
-            System.IO.File.WriteAllText($"{Program.config["User_directory"]}\\{user.IdUser.ToString()}.json", JsonSerializer.Serialize(user));
+            System.IO.File.WriteAllText($"{Program.config["User_directory"]}\\{user.IdUser}.json", JsonSerializer.Serialize(user, new JsonSerializerOptions() { WriteIndented = true }));
             logger.LogInformation("Registration complete");
             return Ok(new Authanswer(user.IdUser,user.Nickname, new List<(int, string)>(),user.Chats));
         }

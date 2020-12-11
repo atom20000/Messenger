@@ -13,11 +13,11 @@ namespace Server.Controllers
 {
     public struct Getrequestmessage
     {
-        public DateTime Daterequest { get; set; }
+        public DateTime Last_mess { get; set; }
         public int IdUser { get; set; }
-        public Getrequestmessage(DateTime daterequest, int iduser)
+        public Getrequestmessage(DateTime last_mess, int iduser)
         {
-            this.Daterequest = daterequest;
+            this.Last_mess = last_mess;
             this.IdUser = iduser;
         }
     }
@@ -44,7 +44,8 @@ namespace Server.Controllers
             if (!JsonSerializer.Deserialize<Chat>(System.IO.File.ReadAllText($"{Program.config["Chats_directory"]}\\{id_chat}.json"), new JsonSerializerOptions() { WriteIndented = true }).Members.Exists(mem => mem == message.Sender)) return Ok("Po moemu ti ne otcuda");
             if (!Directory.Exists($"{Program.config["Chats_directory"]}\\history_message\\{message.TimeSend.ToShortDateString()}"))
                 Directory.CreateDirectory($"{Program.config["Chats_directory"]}\\history_message\\{message.TimeSend.ToShortDateString()}");
-            System.IO.File.AppendAllText($"{Program.config["Chats_directory"]}\\history_message\\{message.TimeSend.ToShortDateString()}\\{id_chat}.json", JsonSerializer.Serialize<Message>(message));
+            List<Message> Mess_list = JsonSerializer.Deserialize<List<Message>>(System.IO.File.ReadAllText($"{Program.config["Chats_directory"]}\\history_message\\{message.TimeSend.ToShortDateString()}\\{id_chat}.json"));
+            System.IO.File.WriteAllText($"{Program.config["Chats_directory"]}\\history_message\\{message.TimeSend.ToShortDateString()}\\{id_chat}.json", JsonSerializer.Serialize<List<Message>>(Mess_list, new JsonSerializerOptions() { WriteIndented = true }));
             // подумай AllText или AllLines 
             return Ok("Ok pochta doshla");
         }
@@ -55,11 +56,11 @@ namespace Server.Controllers
             if (Program.ChatsID.Count == 0) chat.IdChat = 0;
             else chat.IdChat = Program.ChatsID.Keys.Max() + 1;
             Program.ChatsID.Add(chat.IdChat, chat.NameChat);
-            System.IO.File.WriteAllText($"{Program.config["Chats_directory"]}\\{chat.IdChat}.json", JsonSerializer.Serialize<Chat>(chat));
+            System.IO.File.WriteAllText($"{Program.config["Chats_directory"]}\\{chat.IdChat}.json", JsonSerializer.Serialize<Chat>(chat, new JsonSerializerOptions() { WriteIndented = true }));
             foreach (int mem in chat.Members) {
                User us = JsonSerializer.Deserialize<User>(System.IO.File.ReadAllText($"{Program.config["User_directory"]}\\{mem}.json"), new JsonSerializerOptions() { WriteIndented = true });
                us.Chats.Add(chat.IdChat);
-               System.IO.File.WriteAllText($"{Program.config["User_directory"]}\\{mem}.json", JsonSerializer.Serialize(us));
+               System.IO.File.WriteAllText($"{Program.config["User_directory"]}\\{mem}.json", JsonSerializer.Serialize(us, new JsonSerializerOptions() { WriteIndented = true }));
             }
             return Ok(chat);
         }
