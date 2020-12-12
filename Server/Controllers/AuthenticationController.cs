@@ -33,7 +33,7 @@ namespace Server.Controllers
             Program.NickName.Add(user.Nickname);
             Program.LoginID.Add(user.Login, user.IdUser);
             // добавить что чувак в сети 
-            System.IO.File.WriteAllText($"{Program.config["User_directory"]}\\{user.IdUser}.json", JsonSerializer.Serialize(user, new JsonSerializerOptions() { WriteIndented = true }));
+            System.IO.File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["User_directory"],$"{user.IdUser}.json"), JsonSerializer.Serialize(user, new JsonSerializerOptions() { WriteIndented = true }));
             logger.LogInformation("Registration complete");
             return Ok(new Authanswer(user.IdUser,user.Nickname, new List<(int, string)>(),user.Chats));
         }
@@ -44,7 +44,7 @@ namespace Server.Controllers
             logger.LogInformation("Authorization starts");
             if(!Program.LoginID.ContainsKey(request[0])) return Ok(new Authanswer("Login not found"));
             int iduser = Program.LoginID[request[0]];
-            User user = JsonSerializer.Deserialize<User>(System.IO.File.ReadAllText($"{Program.config["User_directory"]}\\{iduser}.json"), new JsonSerializerOptions() { WriteIndented = true });
+            User user = JsonSerializer.Deserialize<User>(System.IO.File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(),Program.config["User_directory"],$"{iduser}.json")), new JsonSerializerOptions() { WriteIndented = true });
             if (user.Password == request[1]) {
                 List<(int, string)> chatnames_id = new List<(int, string)>();
                 foreach (int chat in user.Chats) chatnames_id.Add((chat,Program.ChatsID[chat]));
