@@ -20,7 +20,15 @@ using Messenger;
 
 namespace MessengerApp
 {
-    
+    public struct config
+    {
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public bool Auth_in_file { get; set; }
+        public string Url_server { get; set; }
+        public int Size_vertical { get; set; }
+        public int Size_horizontal { get; set; }
+    }
     public partial class MainWindow : Window
     {
         public MainWindow()
