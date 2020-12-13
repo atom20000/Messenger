@@ -7,7 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\chel.png" />
+    <None Remove="assets\loupe.png" />
+    <None Remove="assets\settings.png" />
+    <None Remove="assets\stickers.png" />
+    <None Remove="assets\Джоли.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MessengerLibrary\MessengerLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\chel.png" />
+    <Resource Include="assets\loupe.png" />
+    <Resource Include="assets\settings.png" />
+    <Resource Include="assets\stickers.png" />
+    <Resource Include="assets\Джоли.jpg" />
   </ItemGroup>
 
 </Project>

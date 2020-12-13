@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,5 +22,13 @@ namespace Messenger
         {
             InitializeComponent();
         }
+
+        private void ButtonGroup_Click(object sender, RoutedEventArgs e)
+        {
+            HttpWebRequest request = WebRequest.CreateHttp("http://56410c0b1e23.ngrok.io/api/Message/createchat");
+            request.Method = "POST";
+            request.ContentType = "application/json";
+        }
     }
+  
 }

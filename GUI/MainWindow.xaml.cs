@@ -16,6 +16,7 @@ using System.Net;
 using System.IO;
 using System.Text.Json;
 using MessengerLibrary;
+using Messenger;
 
 namespace MessengerApp
 {
@@ -27,39 +28,11 @@ namespace MessengerApp
             InitializeComponent();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/api/Message/100500");
-            request.Method = "GET";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-            {
-                MessageBox.Show(reader.ReadToEnd(), "GET", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-
-        }
-
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/api/Message");
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
-            {
-                writer.Write(JsonSerializer.Serialize(new Message(DateTime.Now, "gjghjkdf", "jjgjgjgjgjg")));
-            }
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-            {
-                MessageBox.Show(reader.ReadToEnd(), "POST", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-        }
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if(Login.Text=="Sign in")
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://91bce97e71b7.ngrok.io/api/Authentication/auth");
+                HttpWebRequest request = WebRequest.CreateHttp("http://56410c0b1e23.ngrok.io/api/Authentication/auth");
                 request.Method = "POST";
                 request.ContentType = "application/json";
                 //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -73,7 +46,8 @@ namespace MessengerApp
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
-                        answer = JsonSerializer.Deserialize<Authanswer>(reader.ReadToEnd());
+                        string a = reader.ReadToEnd();
+                        answer = JsonSerializer.Deserialize<Authanswer>(a, new JsonSerializerOptions() {PropertyNameCaseInsensitive=true});
                     }
                 }
                 if ((answer.Nicknameuser == "Login not found") || (answer.Nicknameuser == "Password invalid"))
@@ -83,12 +57,15 @@ namespace MessengerApp
                 }
                 else
                 {
+                    chat _chat = new chat();
+                    _chat.Show();
+                    this.Close();
                     //надо чтобы информация сервера отображалась в главном окне
                 }
             }
             if(Login.Text == "Sign up")
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://91bce97e71b7.ngrok.io/api/Authentication/reg");
+                HttpWebRequest request = WebRequest.CreateHttp("http://56410c0b1e23.ngrok.io/api/Authentication/reg");
                 request.Method = "POST";
                 request.ContentType = "application/json";
                 //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -104,7 +81,9 @@ namespace MessengerApp
                     {
                         using (StreamReader reader = new StreamReader(stream))
                         {
-                            answer = JsonSerializer.Deserialize<Authanswer>(reader.ReadToEnd());
+                            string a = reader.ReadToEnd();
+                            answer = JsonSerializer.Deserialize<Authanswer>(a, new JsonSerializerOptions() {PropertyNameCaseInsensitive=true});
+                           
                         }
                     }
                     if ((answer.Nicknameuser == "This login is registered") || (answer.Nicknameuser == "This nickname is busy"))
@@ -114,8 +93,6 @@ namespace MessengerApp
                     }
                     else
                     {
-                        WarningBlock.Visibility = Visibility.Visible;
-                        WarningBlock.Text = answer.Nicknameuser;
                         //надо чтобы информация сервера отображалась в главном окне
                     }
                 }
