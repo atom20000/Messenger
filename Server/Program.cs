@@ -13,13 +13,25 @@ namespace Server
 {
     public class Program
     {
-        internal static Dictionary<string,int> NickName = new Dictionary<string, int>();
+        internal static Dictionary<string, int> NickName = new Dictionary<string, int>();
         internal static Dictionary<string, int> LoginID = new Dictionary<string, int>();
         internal static Dictionary<int, string> ChatsID = new Dictionary<int, string>();
-        internal static Dictionary<string, string> config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(),"config.json")));
+        internal static Dictionary<string, string> config = new Dictionary<string, string>();
         public static void Main(string[] args)
         {
-
+            try
+            {
+                config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "config.json")));
+            }
+            catch
+            {
+                config = new Dictionary<string, string>()
+                {
+                    { "url_host","http://localhost:5000" },
+                    { "User_directory","Users" },
+                    { "Chats_directory", "Chats" }
+                };
+            }
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), config["User_directory"]))) Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(),config["User_directory"]));
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), config["Chats_directory"]))) Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), config["Chats_directory"]));
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(),config["Chats_directory"],"history_message"))) Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(),config["Chats_directory"],"history_message"));

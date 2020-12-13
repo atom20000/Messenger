@@ -43,7 +43,7 @@ namespace Server.Controllers
             {
                 List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json")))).ToList<string>();
                 List<Message> buff_mes = new List<Message>();
-                for(int i=1;Mess_list.Count!=10;i++)
+                for (int i=1;Mess_list.Count!=10;i++)
                 {
                     try
                     {
@@ -56,7 +56,25 @@ namespace Server.Controllers
                     Mess_list.AddRange(buff_mes.TakeLast(10 - Mess_list.Count));
                 }
             }
-            //Дописать выборку от определенного времени
+            else
+            {
+                List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json")))).ToList<string>();
+                List<Message> buff_mes = new List<Message>();
+                int index = directory_name_files.IndexOf(directory_name_files.Find(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json"))).Date == getrequestmessage.Last_mess.Date));
+                for (int i = index; Mess_list.Count != 10; i--)
+                {
+                    try
+                    {
+                        buff_mes = JsonSerializer.Deserialize<List<Message>>(System.IO.File.ReadAllText(directory_name_files[i]));
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        break;
+                    }
+
+                    Mess_list.AddRange(buff_mes.FindAll(mes => mes.TimeSend.TimeOfDay < getrequestmessage.Last_mess.TimeOfDay).TakeLast(10 - Mess_list.Count));
+                }
+            }
             return Ok(Mess_list);
         }
         [HttpPost("sendmes/{id_chat}")]
