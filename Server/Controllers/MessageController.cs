@@ -15,7 +15,7 @@ namespace Server.Controllers
     [ApiController]
     public class MessageController : Controller
     {
-        [HttpGet("chekmes/{id_chat}")]
+        [HttpPost("cheknewmes/{id_chat}")]
         [Produces("application/json")]
         public IActionResult Checkmes(int id_chat, [FromBody] Check_message_request getrequestmessage)
         {
@@ -30,6 +30,33 @@ namespace Server.Controllers
                     Mess_list.AddRange(from mes in mess_list where mes.TimeSend >= getrequestmessage.Last_mess select mes);
                 }                         
             }
+            return Ok(Mess_list);
+        }
+        [HttpPost("oldmes/{id_chat}")]
+        [Produces("application/json")]
+        public IActionResult Oldmes (int id_chat, [FromBody] Check_message_request getrequestmessage)
+        {
+            if (!JsonSerializer.Deserialize<Chat>(System.IO.File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), $"{id_chat}.json")), new JsonSerializerOptions() { WriteIndented = true }).Members.Exists(mem => mem == getrequestmessage.IdUser))
+                return Ok("Ne obmanevai mena, teba net v etom chate");
+            List<Message> Mess_list = new List<Message>();
+            if (getrequestmessage.Last_mess == new DateTime())
+            {
+                List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json")))).ToList<string>();
+                List<Message> buff_mes = new List<Message>();
+                for(int i=1;Mess_list.Count!=10;i++)
+                {
+                    try
+                    {
+                        buff_mes = JsonSerializer.Deserialize<List<Message>>(System.IO.File.ReadAllText(directory_name_files[^i]));
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        break;
+                    }
+                    Mess_list.AddRange(buff_mes.TakeLast(10 - Mess_list.Count));
+                }
+            }
+            //Дописать выборку от определенного времени
             return Ok(Mess_list);
         }
         [HttpPost("sendmes/{id_chat}")]

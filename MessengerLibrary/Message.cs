@@ -10,6 +10,7 @@ namespace MessengerLibrary
         public DateTime TimeSend { get; set; }
         public string Text { get; set; }
         public int Sender { get; set; }
+        public string Sender_Nickname { get; set; }
         public Message(DateTime timesend, string text, int sender)
         {
             this.TimeSend = timesend;
