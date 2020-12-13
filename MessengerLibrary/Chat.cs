@@ -9,14 +9,12 @@ namespace MessengerLibrary
     {
         public string NameChat { get; set; }
         public int IdChat { get; set; }
-        //public List<Message> Messages { get; set; }
         public List<int> Members { get; set; }
         public Chat(){ }
         public Chat(int idchat, string namechat, List<int> members)
         {
             this.IdChat = idchat;
             this.Members = members;
-            //this.Messages = new List<Message>();
             this.NameChat = namechat;
         }
     }

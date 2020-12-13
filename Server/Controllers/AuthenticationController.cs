@@ -27,10 +27,10 @@ namespace Server.Controllers
         {
             logger.LogInformation("Registration starts");
             if (Program.LoginID.ContainsKey(user.Login)) return Ok(new Authanswer("This login is registered"));
-            if (Program.NickName.Exists(us => us==user.Nickname)) return Ok(new Authanswer("This nickname is busy"));
+            if (Program.NickName.Keys.ToList().Exists(us => us==user.Nickname)) return Ok(new Authanswer("This nickname is busy"));
             if(Program.LoginID.Count==0) user.IdUser = 0;  
             else user.IdUser = Program.LoginID.Values.Max() + 1;
-            Program.NickName.Add(user.Nickname);
+            Program.NickName.Add(user.Nickname, user.IdUser);
             Program.LoginID.Add(user.Login, user.IdUser);
             // добавить что чувак в сети 
             System.IO.File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["User_directory"],$"{user.IdUser}.json"), JsonSerializer.Serialize(user, new JsonSerializerOptions() { WriteIndented = true }));

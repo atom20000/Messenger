@@ -13,10 +13,10 @@ namespace Server
 {
     public class Program
     {
-        internal static List<string> NickName = new List<string>();
+        internal static Dictionary<string,int> NickName = new Dictionary<string, int>();
         internal static Dictionary<string, int> LoginID = new Dictionary<string, int>();
         internal static Dictionary<int, string> ChatsID = new Dictionary<int, string>();
-        internal static Dictionary<string, string> config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(),"config.json"));
+        internal static Dictionary<string, string> config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(),"config.json")));
         public static void Main(string[] args)
         {
 
@@ -27,7 +27,7 @@ namespace Server
             if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(),config["User_directory"],"loginid.json"))) File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), config["User_directory"], "loginid.json"), JsonConvert.SerializeObject(LoginID, Formatting.Indented));
             if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(),config["Chats_directory"],"chatsid.json"))) File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), config["Chats_directory"], "chatsid.json"), JsonConvert.SerializeObject(ChatsID, Formatting.Indented));
 
-            NickName = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), config["User_directory"], "nickname.json")));
+            NickName = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), config["User_directory"], "nickname.json")));
             LoginID = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), config["User_directory"], "loginid.json")));
             ChatsID = JsonConvert.DeserializeObject<Dictionary<int, string>>(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), config["Chats_directory"], "chatsid.json")));
 

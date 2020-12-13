@@ -39,17 +39,21 @@ namespace Server.Controllers
             if (!JsonSerializer.Deserialize<Chat>(System.IO.File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(),Program.config["Chats_directory"],id_chat.ToString(),$"{id_chat}.json")), new JsonSerializerOptions() { WriteIndented = true }).Members.Exists(mem => mem == message.Sender)) 
                 return Ok("Po moemu ti ne otcuda");
             if (!System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(),Program.config["Chats_directory"],id_chat.ToString(),"history_message",$"{message.TimeSend.ToShortDateString()}.json")))
-                System.IO.File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json"), $"{id_chat}.json"), JsonSerializer.Serialize(new List<Message>(), new JsonSerializerOptions() { WriteIndented = true }));
+                System.IO.File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json", $"{id_chat}.json"), JsonSerializer.Serialize(new List<Message>(), new JsonSerializerOptions() { WriteIndented = true }));
             List<Message> Mess_list = JsonSerializer.Deserialize<List<Message>>(System.IO.File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json")));
             System.IO.File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json"), JsonSerializer.Serialize(Mess_list, new JsonSerializerOptions() { WriteIndented = true }));
             return Ok("Ok pochta doshla");
         }
         [HttpPost("createchat")]
         [Produces("application/json")]
-        public IActionResult CreateChat([FromBody] Chat chat)
+        public IActionResult CreateChat([FromBody] Create_chat_struct request_create)
         {
+            Chat chat = new Chat();
+            chat.NameChat = request_create.NameChat;
             if (Program.ChatsID.Count == 0) chat.IdChat = 0;
             else chat.IdChat = Program.ChatsID.Keys.Max() + 1;
+            foreach (string nick in request_create.Members)
+                chat.Members.Add(Program.NickName[nick]);
             Program.ChatsID.Add(chat.IdChat, chat.NameChat);
             System.IO.File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.IdChat.ToString(), $"{chat.IdChat}.json"), JsonSerializer.Serialize<Chat>(chat, new JsonSerializerOptions() { WriteIndented = true }));
             foreach (int mem in chat.Members) {
