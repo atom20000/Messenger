@@ -34,7 +34,7 @@ namespace Server.Controllers
             Program.LoginID.Add(user.Login, user.IdUser);
             System.IO.File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["User_directory"],$"{user.IdUser}.json"), JsonSerializer.Serialize(user, new JsonSerializerOptions() { WriteIndented = true }));
             logger.LogInformation("Registration complete");
-            return Ok(new Authanswer(user.IdUser,user.Nickname, new List<(int, string)>(),user.Chats));
+            return Ok(new Authanswer(user.IdUser,user.Nickname, new List<(int, string)>()));
         }
         [HttpPost("auth")]
         [Produces("application/json")]
@@ -59,7 +59,7 @@ namespace Server.Controllers
                     }
                 }
                 logger.LogInformation("Authorization complete");
-                return Ok(new Authanswer(user.IdUser, user.Nickname, chatnames_id, user.Chats));
+                return Ok(new Authanswer(user.IdUser, user.Nickname, chatnames_id));
              }
             return Ok(new Authanswer("Password invalid"));
         }
