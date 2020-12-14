@@ -45,7 +45,7 @@ namespace Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapGet("/Home", async context => { await context.Response.WriteAsync("Tipo Dom, eto her ne poddergivaet russkie"); });
+                endpoints.MapGet("/Home", async context => { await context.Response.WriteAsync("<h1>Tipo Dom, eto her ne poddergivaet russkie</h1>"); });
             });
             lifetime.ApplicationStopped.Register( () => {
                 File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["User_directory"], "nickname.json"), JsonConvert.SerializeObject(Program.NickName, Formatting.Indented));
@@ -56,6 +56,9 @@ namespace Server
                 File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["User_directory"], "nickname.json"), JsonConvert.SerializeObject(Program.NickName, Formatting.Indented));
                 File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["User_directory"], "loginid.json"), JsonConvert.SerializeObject(Program.LoginID, Formatting.Indented));
                 File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], "chatsid.json"), JsonConvert.SerializeObject(Program.ChatsID, Formatting.Indented));
+            });
+            app.Run(async (context) => {
+                await context.Response.WriteAsync("<h1>What is fuck? What are you doing?</h1>");
             });
         }
     }
