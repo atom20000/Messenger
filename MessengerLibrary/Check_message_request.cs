@@ -26,7 +26,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public Check_message_request FromJson(string value) =>
+        public static Check_message_request FromJson(string value) =>
             JsonSerializer.Deserialize<Check_message_request>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public Check_message_request FromJsonFile(string path) =>
-            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
+        public static Check_message_request FromJsonFile(string path) =>
+            FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }
 }

@@ -25,7 +25,7 @@ namespace Server.Controllers
         public IActionResult Checkmes(int id_chat, [FromBody] Check_message_request getrequestmessage)
         {
             logger.LogInformation("Check new message started");
-            if (! new Chat(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"],id_chat.ToString(),$"{id_chat}.json")).Members.Exists(mem => mem== getrequestmessage.IdUser))
+            if (!Chat.FromJsonFile(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"],id_chat.ToString(),$"{id_chat}.json")).Members.Exists(mem => mem== getrequestmessage.IdUser))
             {
                 logger.LogInformation("Chech new message interrupted because this user doesn't belong this chat");
                 return Ok("Ne obmanevai mena, teba net v etom chate");
@@ -47,7 +47,7 @@ namespace Server.Controllers
         public IActionResult Oldmes (int id_chat, [FromBody] Check_message_request getrequestmessage)
         {
             logger.LogInformation("Sample old message started");
-            if (!new Chat(Path.Combine(Program.config["Chats_directory"], id_chat.ToString(), $"{id_chat}.json")).Members.Exists(mem => mem == getrequestmessage.IdUser))
+            if (!Chat.FromJsonFile(Path.Combine(Program.config["Chats_directory"], id_chat.ToString(), $"{id_chat}.json")).Members.Exists(mem => mem == getrequestmessage.IdUser))
             {
                 logger.LogInformation("Chech new message interrupted because this user doesn't belong this chat");
                 return Ok("Ne obmanevai mena, teba net v etom chate");
@@ -101,7 +101,7 @@ namespace Server.Controllers
                 logger.LogInformation("Send message interrupted because this chat is not found");
                 return Ok("Not found this chat");
             }
-            if (! new Chat(Path.Combine(Program.config["Chats_directory"],id_chat.ToString(),$"{id_chat}.json")).Members.Exists(mem => mem == message.Sender))
+            if (!Chat.FromJsonFile(Path.Combine(Program.config["Chats_directory"],id_chat.ToString(),$"{id_chat}.json")).Members.Exists(mem => mem == message.Sender))
             {
                 logger.LogInformation("Send message interrupted because this user not belong this chat");
                 return Ok("Po moemu ti ne otcuda");
@@ -125,11 +125,11 @@ namespace Server.Controllers
             foreach (string nick in request_create.Members)
                 chat.Members.Add(Program.NickName[nick]);
             Program.ChatsID.Add(chat.IdChat, chat.NameChat);
-            IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.IdChat.ToString(), $"{chat.IdChat}.json"), chat);
+            chat.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.IdChat.ToString(), $"{chat.IdChat}.json"));
             foreach (int mem in chat.Members) {
-                User us = new User(Path.Combine(Program.config["User_directory"], $"{mem}.json"));
+                User us = MessengerLibrary.User.FromJsonFile(Path.Combine(Program.config["User_directory"], $"{mem}.json"));
                 us.Chats.Add(chat.IdChat);
-                IMainFunction.ToJsonFile(Path.Combine(Program.config["User_directory"], $"{mem}.json"), us);
+                us.ToJsonFile(Path.Combine(Program.config["User_directory"], $"{mem}.json"));
             }
             logger.LogInformation("Create chat comlete");
             return Ok(chat);

@@ -19,10 +19,6 @@ namespace MessengerLibrary
             this.Members = members;
             this.NameChat = namechat;
         }
-        public Chat(string path)
-        {
-            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
-        }
         /// <summary>
         /// Преобразует объект в Json
         /// </summary>
@@ -35,7 +31,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public Chat FromJson(string value) =>
+        public static Chat FromJson(string value) =>
             JsonSerializer.Deserialize<Chat>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
         /// <summary>
@@ -50,7 +46,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public Chat FromJsonFile(string path) =>
-            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
+        public static  Chat FromJsonFile(string path) =>
+            FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }
 }

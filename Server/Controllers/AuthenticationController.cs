@@ -39,6 +39,14 @@ namespace Server.Controllers
             }
             if(Program.LoginID.Count==0) user.IdUser = 0;  
             else user.IdUser = Program.LoginID.Values.Max() + 1;
+
+            ///////////////////////////////////////////////После сдачи удалить
+            user.Chats.Add(0);
+            Chat chat = Chat.FromJsonFile(Path.Combine(Program.config["Chats_directory"], "0", $"{0}.json"));
+            chat.Members.Add(user.IdUser);
+            chat.ToJsonFile(Path.Combine(Program.config["Chats_directory"], "0", $"{0}.json"));
+            ////////////////////////////////////////////////После сдачи удалить
+
             Program.NickName.Add(user.Nickname, user.IdUser);
             Program.LoginID.Add(user.Login, user.IdUser);
             user.ToJsonFile(Path.Combine(Program.config["User_directory"], $"{user.IdUser}.json"));
@@ -56,7 +64,7 @@ namespace Server.Controllers
                 return Ok(new Authanswer("Login not found"));
             } 
             int iduser = Program.LoginID[request[0]];
-            User user = new User(Path.Combine(Program.config["User_directory"], $"{iduser}.json"));
+            User user = MessengerLibrary.User.FromJsonFile(Path.Combine(Program.config["User_directory"], $"{iduser}.json"));
             if (user.Password == request[1]) {
                 List<(int, string)> chatnames_id = new List<(int, string)>();
                 foreach (int chat in user.Chats)

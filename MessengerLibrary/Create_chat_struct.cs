@@ -27,7 +27,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public Create_chat_struct FromJson(string value) =>
+        public static Create_chat_struct FromJson(string value) =>
             JsonSerializer.Deserialize<Create_chat_struct>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public Create_chat_struct FromJsonFile(string path) =>
-            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
+        public static Create_chat_struct FromJsonFile(string path) =>
+            FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }
 }

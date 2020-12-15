@@ -34,7 +34,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public Message FromJson(string value) =>
+        public static Message FromJson(string value) =>
             JsonSerializer.Deserialize<Message>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public Message FromJsonFile(string path) =>
-            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
+        public static Message FromJsonFile(string path) =>
+            FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }
 }

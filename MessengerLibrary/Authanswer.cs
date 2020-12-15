@@ -35,7 +35,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public Authanswer FromJson(string value) =>
+        public static Authanswer FromJson(string value) =>
             JsonSerializer.Deserialize<Authanswer>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         /// <summary>
         /// Преобразует объект в Json и сохраняет в файл
@@ -49,7 +49,7 @@ namespace MessengerLibrary
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public Authanswer FromJsonFile(string path) =>
-            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
+        public static Authanswer FromJsonFile(string path) =>
+            FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }
 }
