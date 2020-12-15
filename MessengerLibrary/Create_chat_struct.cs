@@ -15,12 +15,33 @@ namespace MessengerLibrary
             this.NameChat = namechat;
             this.Members = members;
         }
+        /// <summary>
+        /// Преобразует объект в Json
+        /// </summary>
+        /// <returns></returns>
         public string ToJson() =>
             JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+
+        /// <summary>
+        /// реобразует из Json в объект
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public Create_chat_struct FromJson(string value) =>
             JsonSerializer.Deserialize<Create_chat_struct>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+        /// <summary>
+        /// Преобразует объект в Json и сохраняет в файл
+        /// </summary>
+        /// <param name="path"></param>
         public void ToJsonFile(string path) =>
             File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), path), this.ToJson());
+
+        /// <summary>
+        /// Считывает из файла json и преобразует в объект
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public Create_chat_struct FromJsonFile(string path) =>
             this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }

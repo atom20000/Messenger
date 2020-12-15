@@ -22,12 +22,33 @@ namespace MessengerLibrary
             this.Chats = new List<int>();
         }
         public User(){ }
+        /// <summary>
+        /// Преобразует объект в Json
+        /// </summary>
+        /// <returns></returns>
         public string ToJson() =>
             JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+
+        /// <summary>
+        /// реобразует из Json в объект
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public User FromJson(string value) =>
             JsonSerializer.Deserialize<User>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+        /// <summary>
+        /// Преобразует объект в Json и сохраняет в файл
+        /// </summary>
+        /// <param name="path"></param>
         public void ToJsonFile(string path) =>
             File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), path), this.ToJson());
+
+        /// <summary>
+        /// Считывает из файла json и преобразует в объект
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public User FromJsonFile(string path) =>
             this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }
