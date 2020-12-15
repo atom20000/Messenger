@@ -70,6 +70,7 @@ namespace Server.Controllers
                 foreach (int chat in user.Chats)
                 {
                     chatnames_id.Add((chat, Program.ChatsID[chat]));
+                    Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(),"history_message"));
                     if (!System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(),
                         "history_message", $"{DateTime.Now.ToUniversalTime().ToShortDateString()}.json")))
                             IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message",
@@ -97,6 +98,7 @@ namespace Server.Controllers
             //Напиши проверку что пользователь есть в этих беседах
             foreach (int chat in out_request.Chats_Id)
             {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), "history_message"));
                 if (!System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json")))
                     IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json", $"{chat}.json"),
                         new List<Message>() { new Message(out_request.Sing_Out_Time, $"{out_request.NickName} offline", -9999, "Ttechnical information") });
