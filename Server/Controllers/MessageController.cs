@@ -25,7 +25,8 @@ namespace Server.Controllers
         public IActionResult Checkmes(int id_chat, [FromBody] Check_message_request getrequestmessage)
         {
             logger.LogInformation("Check new message started");
-            if (!Chat.FromJsonFile(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"],id_chat.ToString(),$"{id_chat}.json")).Members.Exists(mem => mem== getrequestmessage.IdUser))
+            Chat chat = Chat.FromJsonFile(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), $"{id_chat}.json"));
+            if (!chat.Members.Exists(mem => mem== getrequestmessage.IdUser))
             {
                 logger.LogInformation("Chech new message interrupted because this user doesn't belong this chat");
                 return Ok("Ne obmanevai mena, teba net v etom chate");
@@ -40,14 +41,15 @@ namespace Server.Controllers
                 }                         
             }
             logger.LogInformation("Check new message comlete. Send {Mess_list.Count} message");
-            return Ok(Mess_list);
+            return Ok(new CheckMessResponse(Mess_list, chat.Members.Count));
         }
         [HttpPost("oldmes/{id_chat}")]
         [Produces("application/json")]
         public IActionResult Oldmes (int id_chat, [FromBody] Check_message_request getrequestmessage)
         {
             logger.LogInformation("Sample old message started");
-            if (!Chat.FromJsonFile(Path.Combine(Program.config["Chats_directory"], id_chat.ToString(), $"{id_chat}.json")).Members.Exists(mem => mem == getrequestmessage.IdUser))
+            Chat chat = Chat.FromJsonFile(Path.Combine(Program.config["Chats_directory"], id_chat.ToString(), $"{id_chat}.json"));
+            if (!chat.Members.Exists(mem => mem == getrequestmessage.IdUser))
             {
                 logger.LogInformation("Chech new message interrupted because this user doesn't belong this chat");
                 return Ok("Ne obmanevai mena, teba net v etom chate");
@@ -90,7 +92,7 @@ namespace Server.Controllers
                 }
             }
             logger.LogInformation($"Sample old message comlete. Send {Mess_list.Count} message");
-            return Ok(Mess_list);
+            return Ok(new CheckMessResponse(Mess_list, chat.Members.Count));
         }
         [HttpPost("sendmes/{id_chat}")]
         public IActionResult Sendmes(int id_chat, [FromBody]Message message)
