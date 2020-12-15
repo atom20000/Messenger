@@ -21,6 +21,10 @@ namespace MessengerLibrary
             this.Nickname = nickname;
             this.Chats = new List<int>();
         }
+        public User(string path)
+        {
+            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
+        }
         public User(){ }
         /// <summary>
         /// Преобразует объект в Json

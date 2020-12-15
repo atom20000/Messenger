@@ -26,8 +26,17 @@ namespace Server.Controllers
         public IActionResult Reg([FromBody] User user)
         {
             logger.LogInformation("Registration starts");
-            if (Program.LoginID.ContainsKey(user.Login)) return Ok(new Authanswer("This login is registered"));
-            if (Program.NickName.Keys.ToList().Exists(us => us==user.Nickname)) return Ok(new Authanswer("This nickname is busy"));
+            if (Program.LoginID.ContainsKey(user.Login))
+            {
+                logger.LogInformation("Registration interrupted because this login is registered");
+                return Ok(new Authanswer("This login is registered"));
+            }
+
+            if (Program.NickName.Keys.ToList().Exists(us => us == user.Nickname)) 
+            {
+                logger.LogInformation("Registration interrupted because this nickname is busy");
+                return Ok(new Authanswer("This nickname is busy")); 
+            }
             if(Program.LoginID.Count==0) user.IdUser = 0;  
             else user.IdUser = Program.LoginID.Values.Max() + 1;
             Program.NickName.Add(user.Nickname, user.IdUser);
@@ -41,9 +50,13 @@ namespace Server.Controllers
         public IActionResult Auth([FromBody] List<string> request)
         {
             logger.LogInformation("Authorization starts");
-            if(!Program.LoginID.ContainsKey(request[0])) return Ok(new Authanswer("Login not found"));
+            if (!Program.LoginID.ContainsKey(request[0]))
+            {
+                logger.LogInformation("Authorization interrupted because login not found");
+                return Ok(new Authanswer("Login not found"));
+            } 
             int iduser = Program.LoginID[request[0]];
-            User user = new User().FromJsonFile(Path.Combine(Program.config["User_directory"], $"{iduser}.json"));
+            User user = new User(Path.Combine(Program.config["User_directory"], $"{iduser}.json"));
             if (user.Password == request[1]) {
                 List<(int, string)> chatnames_id = new List<(int, string)>();
                 foreach (int chat in user.Chats)
@@ -65,12 +78,14 @@ namespace Server.Controllers
                 logger.LogInformation("Authorization complete");
                 return Ok(new Authanswer(user.IdUser, user.Nickname, chatnames_id));
              }
+            logger.LogInformation("Authorization interrupted because password invalid");
             return Ok(new Authanswer("Password invalid"));
         }
         [HttpPost("singout")]
         [Produces("application/json")]
         public IActionResult Sing_out([FromBody] Sing_out_request out_request)
         {
+            logger.LogInformation("Sign out starts");
             //Напиши проверку что пользователь есть в этих беседах
             foreach (int chat in out_request.Chats_Id)
             {
@@ -84,6 +99,7 @@ namespace Server.Controllers
                     IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json"), Mess_list);
                 }
             }
+            logger.LogInformation("Sign out complete");
             return Ok("vse ok");
         }
     }

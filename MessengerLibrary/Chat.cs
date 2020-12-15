@@ -19,6 +19,10 @@ namespace MessengerLibrary
             this.Members = members;
             this.NameChat = namechat;
         }
+        public Chat(string path)
+        {
+            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
+        }
         /// <summary>
         /// Преобразует объект в Json
         /// </summary>
