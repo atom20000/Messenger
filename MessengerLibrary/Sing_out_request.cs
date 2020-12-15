@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.Json;
 
 namespace MessengerLibrary
 {
-    public class Sing_out_request
+    public class Sing_out_request 
     {
         public string NickName { get; set; }
         public List<int> Chats_Id { get; set; }
@@ -15,5 +17,13 @@ namespace MessengerLibrary
             this.Chats_Id = chats_id;
             this.Sing_Out_Time = sing_out_time;
         }
+        public string ToJson() =>
+            JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        public Sing_out_request FromJson(string value) =>
+            JsonSerializer.Deserialize<Sing_out_request>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        public void ToJsonFile(string path) =>
+            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), path), this.ToJson());
+        public Sing_out_request FromJsonFile(string path) =>
+            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text.Json;
+using System.IO;
 
 namespace MessengerLibrary
 {
@@ -22,5 +23,14 @@ namespace MessengerLibrary
             this.Chatnames_Id = new List<(int, string)>();
         }
         public Authanswer(){ }
+
+        public string ToJson() =>
+           JsonSerializer.Serialize(this, new JsonSerializerOptions() { WriteIndented = true });
+        public Authanswer FromJson(string value) =>
+            JsonSerializer.Deserialize<Authanswer>(value, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        public void ToJsonFile(string path) =>
+            File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), path), this.ToJson());
+        public Authanswer FromJsonFile(string path) =>
+            this.FromJson(File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), path)));
     }
 }
