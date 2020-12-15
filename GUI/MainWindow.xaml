@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MessengerApp"
         mc:Ignorable="d"
-        Title="Messenger" Height="1080" Width="1920" MaxHeight="1080" MaxWidth="1920" MinHeight="768" MinWidth="1024" Background="#222" Foreground="#f6f6f6" WindowState="Maximized" WindowStartupLocation="CenterScreen">
+        Title="Messenger" Height="1080" Width="1920" MaxHeight="1080" MaxWidth="1920" MinHeight="768" MinWidth="1024" Background="#222" Foreground="#f6f6f6" WindowState="Maximized" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Window.Resources>
         <Style x:Key="Screen">
             <Style.Setters>

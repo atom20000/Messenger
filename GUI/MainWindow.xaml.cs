@@ -20,7 +20,7 @@ using Messenger;
 
 namespace MessengerApp
 {
-    public struct config
+    public struct Config
     {
         public string Url_server { get; set; }
         public int Update_rate { get; set; }
@@ -29,6 +29,11 @@ namespace MessengerApp
         public bool Auth_in_file { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize<Config>(this, new JsonSerializerOptions() {WriteIndented=true});
+        }
     }
     public partial class MainWindow : Window
     {
@@ -37,11 +42,15 @@ namespace MessengerApp
             InitializeComponent();
         }
 
+        public static Config config;
+        internal static Authanswer answer;
+        internal static CheckMessResponse messages;
+
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if(Login.Text=="Sign in")
             {
-                HttpWebRequest request = WebRequest.CreateHttp("http://56410c0b1e23.ngrok.io/api/Authentication/auth");
+                HttpWebRequest request = WebRequest.CreateHttp($"{config.Url_server}/api/Authentication/auth");
                 request.Method = "POST";
                 request.ContentType = "application/json";
                 //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -50,7 +59,7 @@ namespace MessengerApp
                     writer.Write(JsonSerializer.Serialize(new List<string>() { LoginBox.Text, PasswordBox.Password }));
                 }
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Authanswer answer;
+                
                 using (Stream stream = response.GetResponseStream())
                 {
                     using (StreamReader reader = new StreamReader(stream))
@@ -67,14 +76,29 @@ namespace MessengerApp
                 else
                 {
                     chat _chat = new chat();
-                    _chat.Show();
                     this.Close();
-                    //надо чтобы информация сервера отображалась в главном окне
+                    _chat.Show();           
+                    request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].Item1}");
+                    request.Method = "POST";
+                    request.ContentType = "application/json";
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                    {
+                        writer.Write(new Check_message_request(new DateTime(),answer.Iduser).ToJson());
+                    }
+                    response = (HttpWebResponse)request.GetResponse();
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string a = reader.ReadToEnd();
+                            messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                        }
+                    }
                 }
             }
             if(Login.Text == "Sign up")
             {
-                HttpWebRequest request = WebRequest.CreateHttp("http://56410c0b1e23.ngrok.io/api/Authentication/reg");
+                HttpWebRequest request = WebRequest.CreateHttp($"{config.Url_server}/api/Authentication/reg");
                 request.Method = "POST";
                 request.ContentType = "application/json";
                 //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -85,14 +109,13 @@ namespace MessengerApp
                         writer.Write(JsonSerializer.Serialize(new User(LoginBox.Text, PasswordBox.Password, NicknameBox.Text)));
                     }
                     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                    Authanswer answer;
+                    
                     using (Stream stream = response.GetResponseStream())
                     {
                         using (StreamReader reader = new StreamReader(stream))
                         {
                             string a = reader.ReadToEnd();
-                            answer = JsonSerializer.Deserialize<Authanswer>(a, new JsonSerializerOptions() {PropertyNameCaseInsensitive=true});
-                           
+                            answer = Authanswer.FromJson(a);
                         }
                     }
                     if ((answer.Nicknameuser == "This login is registered") || (answer.Nicknameuser == "This nickname is busy"))
@@ -100,9 +123,53 @@ namespace MessengerApp
                         WarningBlock.Visibility = Visibility.Visible;
                         WarningBlock.Text = answer.Nicknameuser;
                     }
-                    else
+                    if (answer.Nicknameuser == "Davai cherez auth")
                     {
-                        //надо чтобы информация сервера отображалась в главном окне
+                        request = WebRequest.CreateHttp($"{config.Url_server}/api/Authentication/auth");
+                        request.Method = "POST";
+                        request.ContentType = "application/json";
+                        //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                        using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                        {
+                            writer.Write(JsonSerializer.Serialize(new List<string>() { LoginBox.Text, PasswordBox.Password }));
+                        }
+                        response = (HttpWebResponse)request.GetResponse();
+
+                        using (Stream stream = response.GetResponseStream())
+                        {
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                string a = reader.ReadToEnd();
+                                answer = JsonSerializer.Deserialize<Authanswer>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                            }
+                        }
+                        if ((answer.Nicknameuser == "Login not found") || (answer.Nicknameuser == "Password invalid"))
+                        {
+                            WarningBlock.Visibility = Visibility.Visible;
+                            WarningBlock.Text = answer.Nicknameuser;
+                        }
+                        else
+                        {
+                            chat _chat = new chat();
+                            _chat.Show();
+                            this.Close();
+                            request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].Item1}");
+                            request.Method = "POST";
+                            request.ContentType = "application/json";
+                            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                            {
+                                writer.Write(new Check_message_request(new DateTime(), answer.Iduser).ToJson());
+                            }
+                            response = (HttpWebResponse)request.GetResponse();
+                            using (Stream stream = response.GetResponseStream())
+                            {
+                                using (StreamReader reader = new StreamReader(stream))
+                                {
+                                    string a = reader.ReadToEnd();
+                                    messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                                }
+                            }
+                        }
                     }
                 }
                 else
@@ -152,7 +219,27 @@ namespace MessengerApp
             }
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                config = JsonSerializer.Deserialize<Config>(File.ReadAllText("config.json"));
 
-
+            }
+            catch
+            {
+                config = new Config()
+                {
+                    Url_server = "http://localhost:5000",
+                    Auth_in_file = false,
+                    Login = null,
+                    Password = null,
+                    Size_horizontal = 1920,
+                    Size_vertical = 1080,
+                    Update_rate = 1000
+                };
+                File.WriteAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "config.json"), config.ToString());
+            }
+        }
     }
 }
