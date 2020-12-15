@@ -36,7 +36,7 @@ namespace Server.Controllers
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message"));
             foreach (string nam in Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")))
             {
-                if(DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json"))) >= getrequestmessage.Last_mess)
+                if(DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json"))) >= getrequestmessage.Last_mess)/////
                 {
                     List<Message> mess_list = JsonSerializer.Deserialize<List<Message>>(nam);
                     Mess_list.AddRange(from mes in mess_list where mes.TimeSend >= getrequestmessage.Last_mess select mes);
@@ -61,7 +61,7 @@ namespace Server.Controllers
             if (getrequestmessage.Last_mess == new DateTime())
             {
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message"));
-                List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json")))).ToList<string>();
+                List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json")))).ToList<string>();///////
                 List<Message> buff_mes = new List<Message>();
                 for (int i=1;Mess_list.Count!=10;i++)
                 {
@@ -69,7 +69,7 @@ namespace Server.Controllers
                     {
                         buff_mes = IMainFunction.FromJsonFile<List<Message>>(directory_name_files[^i]);
                     }
-                    catch (IndexOutOfRangeException)
+                    catch 
                     {
                         break;
                     }
@@ -79,7 +79,7 @@ namespace Server.Controllers
             else
             {
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message"));
-                List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json")))).ToList<string>();
+                List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json")))).ToList<string>();///////
                 List<Message> buff_mes = new List<Message>();
                 int index = directory_name_files.IndexOf(directory_name_files.Find(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json"))).Date == getrequestmessage.Last_mess.Date));
                 for (int i = index; Mess_list.Count != 10; i--)
@@ -88,7 +88,7 @@ namespace Server.Controllers
                     {
                         buff_mes = IMainFunction.FromJsonFile<List<Message>>(directory_name_files[i]);
                     }
-                    catch (IndexOutOfRangeException)
+                    catch 
                     {
                         break;
                     }
@@ -117,6 +117,7 @@ namespace Server.Controllers
             if (!System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json")))
                 IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json", $"{id_chat}.json"), new List<Message>());
             List<Message> Mess_list = IMainFunction.FromJsonFile<List<Message>>(Path.Combine( Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json"));
+            Mess_list.Add(message);
             IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json"), Mess_list);
             logger.LogInformation("Send message complete");
             return Ok("Ok pochta doshla");

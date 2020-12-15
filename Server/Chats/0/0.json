@@ -1,5 +1,7 @@
 {
   "NameChat": "Main Chat",
   "IdChat": 0,
-  "Members": []
+  "Members": [
+    0
+  ]
 }

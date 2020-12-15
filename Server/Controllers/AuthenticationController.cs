@@ -74,7 +74,7 @@ namespace Server.Controllers
                     if (!System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(),
                         "history_message", $"{DateTime.Now.ToUniversalTime().ToShortDateString()}.json")))
                             IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message",
-                                $"{DateTime.Now.ToUniversalTime().ToShortDateString()}.json", $"{chat}.json"),
+                                $"{DateTime.Now.ToUniversalTime().ToShortDateString()}.json"),
                                 new List<Message>() { new Message(DateTime.Now.ToUniversalTime(), $"{user.Nickname} online", -9999, "Ttechnical information") });  
                     else
                     {
@@ -100,7 +100,7 @@ namespace Server.Controllers
             {
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), "history_message"));
                 if (!System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json")))
-                    IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json", $"{chat}.json"),
+                    IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json"),
                         new List<Message>() { new Message(out_request.Sing_Out_Time, $"{out_request.NickName} offline", -9999, "Ttechnical information") });
                 else
                 {
