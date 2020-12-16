@@ -73,7 +73,10 @@ namespace Messenger
                 ChatMessageBlock.VerticalAlignment = VerticalAlignment.Bottom;
                 ChatMessageBlock.FontSize = 10;
                 */
-                Grid mainGrid = new Grid();
+                Grid mainGrid = new Grid()
+                {
+                    Margin = new Thickness(10)
+                };      
                 StackPanel imageStackPanel = new StackPanel()
                 {
                     Orientation = Orientation.Horizontal,
@@ -81,43 +84,58 @@ namespace Messenger
                 };
                 StackPanel nameStackPanel = new StackPanel()
                 {
-                Orientation = Orientation.Vertical
-
+                Orientation = Orientation.Horizontal
                 };
-                StackPanel messageStackPanel = new StackPanel()
+                StackPanel nameTimeStackPanel = new StackPanel()
                 {
-                    Orientation=Orientation.Horizontal,
-
+                    Orientation = Orientation.Vertical,
                 };
                 Image icon = new Image()
                 {
-
+                    
                 };
                 TextBlock nickname = new TextBlock()
                 {
-                    Text = "oleg"
+                    Text = MainWindow.answer.Nicknameuser,
+                    Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
+                    FontSize = 14,
+                    VerticalAlignment=VerticalAlignment.Center,
+                    Margin = new Thickness(5, 0, 0, 0)
                 };
                 TextBox message = new TextBox()
                 {
                     Width = 300,
                     AcceptsReturn = true,
+                    TextWrapping = TextWrapping.Wrap,
                     Text = MessageBox.Text,
-                    IsEnabled=false
+                    IsEnabled=false,
+                    FontSize=26,   
+                    Background = Brushes.Transparent,
+                    Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(49, 46, 43)),
                     
                 };
                 TextBox time = new TextBox()
                 {
-                    IsEnabled=false
+                    IsEnabled = false,
+                    Text = DateTime.Now.ToString("HH:mm"),
+                    FontSize=14,
+                    VerticalAlignment=VerticalAlignment.Center, 
+                    Foreground=Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(49, 46, 43)),
+                    Background = Brushes.Transparent,
+                    Margin=new Thickness(10, 0, 10, 0),
                 };
 
-                messageStackPanel.Children.Add(message);
-                messageStackPanel.Children.Add(time);
                 nameStackPanel.Children.Add(nickname);
-                nameStackPanel.Children.Add(messageStackPanel);
+                nameStackPanel.Children.Add(time);
+                nameTimeStackPanel.Children.Add(nameStackPanel);
+                nameTimeStackPanel.Children.Add(message);
                 imageStackPanel.Children.Add(icon);
-                imageStackPanel.Children.Add(nameStackPanel);
+                imageStackPanel.Children.Add(nameTimeStackPanel);
                 mainGrid.Children.Add(imageStackPanel);
                 MessageField.Children.Add(mainGrid);
+                
 
 
             } 
@@ -131,6 +149,17 @@ namespace Messenger
             
         }
 
+        private void MessageBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                if (Keyboard.Modifiers == ModifierKeys.None)
+                {
+                    e.Handled = true;
+                    ButtonMessage_Click(MessageClick, null);
+                }
+            }
+        }
     }
 
 }
