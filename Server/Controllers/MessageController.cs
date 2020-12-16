@@ -39,7 +39,7 @@ namespace Server.Controllers
                 if(DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json"))) >= getrequestmessage.Last_mess)/////
                 {
                     List<Message> mess_list = JsonSerializer.Deserialize<List<Message>>(nam);
-                    Mess_list.AddRange(from mes in mess_list where mes.TimeSend >= getrequestmessage.Last_mess && mes.Sender!=getrequestmessage.IdUser select mes);
+                    Mess_list.AddRange(from mes in mess_list where mes.TimeSend >= getrequestmessage.Last_mess select mes);
                 }                         
             }
             logger.LogInformation("Check new message comlete. Send {Mess_list.Count} message");
