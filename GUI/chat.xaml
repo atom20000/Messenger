@@ -125,7 +125,7 @@
             <TextBox Style="{StaticResource MessageBox}" Height="55" Margin="40, 20, 40, 20" VerticalAlignment="Top" Background="#BABABA" FontSize="26"></TextBox>
         </Grid>
         <Grid Grid.Row="2" Grid.Column="1" Background="#312E2B">
-            <TextBox x:Name="MessageBox" Text="Type your Message..." Style="{StaticResource MessageBox}" Width="1000" BorderBrush="#312E2B" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="26" Background="#312E2B" Margin="20"/>
+            <TextBox x:Name="MessageBox" Text="Type your Message..." Style="{StaticResource MessageBox}" Width="1000" BorderBrush="#312E2B" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="26" Background="#312E2B" Margin="20" PreviewKeyDown="MessageBox_PreviewKeyDown"/>
             <Button
             x:Name="MessageClick"
             HorizontalAlignment="Right" 
