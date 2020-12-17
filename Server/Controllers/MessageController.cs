@@ -38,11 +38,11 @@ namespace Server.Controllers
             {
                 if(DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json"))) >= getrequestmessage.Last_mess)/////
                 {
-                    List<Message> mess_list = JsonSerializer.Deserialize<List<Message>>(nam);
+                    List<Message> mess_list = IMainFunction.FromJsonFile<List<Message>>(nam);
                     Mess_list.InsertRange(0,from mes in mess_list where mes.TimeSend >= getrequestmessage.Last_mess select mes);
                 }                         
             }
-            logger.LogInformation("Check new message comlete. Send {Mess_list.Count} message");
+            logger.LogInformation($"Check new message comlete. Send {Mess_list.Count} message");
             return Ok(new CheckMessResponse(Mess_list, chat.Members.Count));
         }
         [HttpPost("oldmes/{id_chat}")]
