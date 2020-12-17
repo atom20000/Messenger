@@ -73,7 +73,7 @@ namespace Server.Controllers
                     {
                         break;
                     }
-                    Mess_list.AddRange(buff_mes.TakeLast(10 - Mess_list.Count));
+                    Mess_list.AddRange(buff_mes.TakeLast(10 - Mess_list.Count).Reverse());
                 }
             }
             else
@@ -93,7 +93,7 @@ namespace Server.Controllers
                         break;
                     }
 
-                    Mess_list.AddRange(buff_mes.FindAll(mes => mes.TimeSend.TimeOfDay < getrequestmessage.Last_mess.TimeOfDay).TakeLast(10 - Mess_list.Count));
+                    Mess_list.AddRange(buff_mes.FindAll(mes => mes.TimeSend.TimeOfDay < getrequestmessage.Last_mess.TimeOfDay).TakeLast(10 - Mess_list.Count).Reverse());
                 }
             }
             logger.LogInformation($"Sample old message comlete. Send {Mess_list.Count} message");
