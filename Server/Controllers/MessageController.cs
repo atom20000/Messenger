@@ -36,10 +36,10 @@ namespace Server.Controllers
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message"));
             foreach (string nam in Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")))
             {
-                if(DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json"))) >= getrequestmessage.Last_mess)/////
+                if(DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json"))).Date >= getrequestmessage.Last_mess.Date)/////
                 {
                     List<Message> mess_list = IMainFunction.FromJsonFile<List<Message>>(nam);
-                    Mess_list.InsertRange(0,from mes in mess_list where mes.TimeSend >= getrequestmessage.Last_mess select mes);
+                    Mess_list.InsertRange(0,from mes in mess_list where mes.TimeSend.TimeOfDay > getrequestmessage.Last_mess.TimeOfDay select mes);
                 }                         
             }
             logger.LogInformation($"Check new message comlete. Send {Mess_list.Count} message");
