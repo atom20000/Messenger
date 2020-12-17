@@ -2,6 +2,8 @@
   "NameChat": "Main Chat",
   "IdChat": 0,
   "Members": [
-    0
+    0,
+    1,
+    2
   ]
 }
