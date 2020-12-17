@@ -38,11 +38,11 @@ namespace Server.Controllers
             {
                 if(DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json"))) >= getrequestmessage.Last_mess)/////
                 {
-                    List<Message> mess_list = JsonSerializer.Deserialize<List<Message>>(nam);
-                    Mess_list.AddRange(from mes in mess_list where mes.TimeSend >= getrequestmessage.Last_mess select mes);
+                    List<Message> mess_list = IMainFunction.FromJsonFile<List<Message>>(nam);
+                    Mess_list.InsertRange(0,from mes in mess_list where mes.TimeSend >= getrequestmessage.Last_mess select mes);
                 }                         
             }
-            logger.LogInformation("Check new message comlete. Send {Mess_list.Count} message");
+            logger.LogInformation($"Check new message comlete. Send {Mess_list.Count} message");
             return Ok(new CheckMessResponse(Mess_list, chat.Members.Count));
         }
         [HttpPost("oldmes/{id_chat}")]
@@ -73,7 +73,7 @@ namespace Server.Controllers
                     {
                         break;
                     }
-                    Mess_list.AddRange(buff_mes.TakeLast(10 - Mess_list.Count).Reverse());
+                    Mess_list.InsertRange(0,buff_mes.TakeLast(10 - Mess_list.Count));
                 }
             }
             else
@@ -93,7 +93,7 @@ namespace Server.Controllers
                         break;
                     }
 
-                    Mess_list.AddRange(buff_mes.FindAll(mes => mes.TimeSend.TimeOfDay < getrequestmessage.Last_mess.TimeOfDay).TakeLast(10 - Mess_list.Count).Reverse());
+                    Mess_list.InsertRange(0,buff_mes.FindAll(mes => mes.TimeSend.TimeOfDay < getrequestmessage.Last_mess.TimeOfDay).TakeLast(10 - Mess_list.Count));
                 }
             }
             logger.LogInformation($"Sample old message comlete. Send {Mess_list.Count} message");
