@@ -177,7 +177,7 @@ namespace MessengerApp
                                     messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                                 }
                             }
-                            _chat.Count.Text = messages.Count_members.ToString();
+                            _chat.Count.Text = $"{ messages.Count_members.ToString()} members";
                             foreach (Message mess in MainWindow.messages.Mess_list)
                             {
                                 _chat.Draw(mess);

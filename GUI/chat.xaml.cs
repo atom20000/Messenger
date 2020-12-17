@@ -90,7 +90,7 @@ namespace Messenger
                     MessageField.Dispatcher.Invoke(() =>
                     {
 
-                    //Count.Text = $"{ MainWindow.messages.Count_members.ToString()} members";
+                    Count.Text = $"{ MainWindow.messages.Count_members.ToString()} members";
 
                     foreach (Message mess in MainWindow.messages.Mess_list)
                         {
