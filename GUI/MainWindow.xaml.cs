@@ -77,7 +77,7 @@ namespace MessengerApp
                 {
                     chat _chat = new chat();
                     this.Close();
-                    _chat.Show();           
+                    _chat.Show();
                     request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].Item1}");
                     request.Method = "POST";
                     request.ContentType = "application/json";
@@ -94,6 +94,14 @@ namespace MessengerApp
                             messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                         }
                     }
+                    _chat.Count.Text = $"{ messages.Count_members.ToString()} members";
+                    foreach (Message mess in MainWindow.messages.Mess_list)
+                    {
+                        _chat.Draw(mess);
+                    }
+                    _chat.timeFirstLastMessage.Item1 = messages.Mess_list[0].TimeSend;
+                    _chat.timeFirstLastMessage.Item2 = messages.Mess_list[^1].TimeSend;
+                    _chat.Check_new_message();
                 }
             }
             if(Login.Text == "Sign up")
@@ -149,7 +157,7 @@ namespace MessengerApp
                             WarningBlock.Text = answer.Nicknameuser;
                         }
                         else
-                        {
+                        {                           
                             chat _chat = new chat();
                             _chat.Show();
                             this.Close();
@@ -169,6 +177,15 @@ namespace MessengerApp
                                     messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                                 }
                             }
+                            _chat.Count.Text = messages.Count_members.ToString();
+                            foreach (Message mess in MainWindow.messages.Mess_list)
+                            {
+                                _chat.Draw(mess);
+                            }
+                            _chat.timeFirstLastMessage.Item1 = messages.Mess_list[0].TimeSend;
+                            _chat.timeFirstLastMessage.Item2 = messages.Mess_list[^1].TimeSend;
+                            _chat.Check_new_message();
+                            
                         }
                     }
                 }

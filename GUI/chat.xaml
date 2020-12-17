@@ -111,7 +111,7 @@
                 <ContentControl Margin="35, 0, 0, 0"  Content="{StaticResource IconSuper}"/>
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Group" FontSize="25" Margin="5" Foreground="Aqua"/>
-                    <TextBlock x:Name="Count" FontSize="25" Margin="5" Foreground="Aqua"/>
+                    <TextBlock x:Name="Count" FontSize="15" Margin="3" Foreground="Aqua" VerticalAlignment="Bottom"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
@@ -125,7 +125,7 @@
             <TextBox Style="{StaticResource MessageBox}" Height="55" Margin="40, 20, 40, 20" VerticalAlignment="Top" Background="#BABABA" FontSize="26"></TextBox>
         </Grid>
         <Grid Grid.Row="2" Grid.Column="1" Background="#312E2B">
-            <TextBox x:Name="MessageBox" Text="Type your Message..." Style="{StaticResource MessageBox}" Width="1000" BorderBrush="#312E2B" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="26" Background="#312E2B" Margin="20" PreviewKeyDown="MessageBox_PreviewKeyDown"/>
+            <TextBox x:Name="MessageBox" Text="Type your Message..." Style="{StaticResource MessageBox}" Width="1000" BorderBrush="#312E2B" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="26" Background="#312E2B" Margin="20" PreviewKeyDown="MessageBox_PreviewKeyDown" MouseDoubleClick="MessageBox_MouseDoubleClick"/>
             <Button
             x:Name="MessageClick"
             HorizontalAlignment="Right" 
