@@ -110,7 +110,7 @@
             <StackPanel Orientation="Horizontal" x:Name="Super" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#474442">
                 <ContentControl Margin="35, 0, 0, 0"  Content="{StaticResource IconSuper}"/>
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Group" FontSize="25" Margin="5" Foreground="Aqua"/>
+                    <TextBlock x:Name="NameChat" Text="MainChat" FontSize="25" Margin="5" Foreground="Aqua"/>
                     <TextBlock x:Name="Count" FontSize="15" Margin="3" Foreground="Aqua" VerticalAlignment="Bottom"/>
                 </StackPanel>
             </StackPanel>
