@@ -9,7 +9,7 @@ namespace MessengerLibrary
     {
         public string Nicknameuser { get; set; }
         public int Iduser { get; set; }
-        public List<(int,string)> Chatnames_Id { get; set; }
+        public List<(int ID_chat ,string Namechat)> Chatnames_Id { get; set; }
         public Authanswer(int iduser, string nicknameuser, List<(int,string)> chatnames)
         {
             this.Iduser = iduser;

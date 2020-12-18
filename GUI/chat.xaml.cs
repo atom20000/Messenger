@@ -27,7 +27,7 @@ namespace Messenger
         {
             InitializeComponent();
         }
-        
+
         private void ButtonGroup_Click(object sender, RoutedEventArgs e)
         {
             /*
@@ -41,11 +41,11 @@ namespace Messenger
             */
         }
 
-        internal (DateTime, DateTime) timeFirstLastMessage;
+        internal (DateTime Time_first_message, DateTime Time_last_message) timeFirstLastMessage;
         private void ButtonMessage_Click(object sender, RoutedEventArgs e)
         {
             string ans;
-            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/sendmes/{MainWindow.answer.Chatnames_Id[0].Item1}"); // id чата, метод должен понимать из какого чата его запустили 
+            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/sendmes/{MainWindow.answer.Chatnames_Id[0].ID_chat}"); // id чата, метод должен понимать из какого чата его запустили 
             request.Method = "POST";
             request.ContentType = "application/json";
             using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
@@ -62,8 +62,8 @@ namespace Messenger
             }
             if (ans == "Ok pochta doshla")
             {
-               
-            } 
+
+            }
 
         }
 
@@ -81,20 +81,17 @@ namespace Messenger
 
         internal async void Check_new_message()
         {
-
-            await Task.Run(() => 
+            await Task.Run(() =>
             {
                 while (true)
                 {
                     Message_request();
                     MessageField.Dispatcher.Invoke(() =>
                     {
+                        Count.Text = $"{ MainWindow.messages.Count_members.ToString()} members";
+                        bool bottom = Scroll.VerticalOffset == Scroll.ScrollableHeight;
 
-                    Count.Text = $"{ MainWindow.messages.Count_members.ToString()} members";
-                    bool bottom=Scroll.VerticalOffset==Scroll.ScrollableHeight;
-                        
-
-                    foreach (Message mess in MainWindow.messages.Mess_list)
+                        foreach (Message mess in MainWindow.messages.Mess_list)
                         {
                             Draw(mess);
                             MessageBox.Text = "";
@@ -105,33 +102,29 @@ namespace Messenger
                         }
                     });
                     Task.Delay(MainWindow.config.Update_rate);
-
                 }
-
             });
-
-
         }
-        internal void  Message_request()
+        internal void Message_request()
         {
-            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/checknewmes/{MainWindow.answer.Chatnames_Id[0].Item1}"); // id чата, метод должен понимать из какого чата его запустили 
+            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/checknewmes/{MainWindow.answer.Chatnames_Id[0].ID_chat}"); // id чата, метод должен понимать из какого чата его запустили 
             request.Method = "POST";
             request.ContentType = "application/json";
             using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
             {
-                writer.Write(JsonSerializer.Serialize(new Check_message_request(timeFirstLastMessage.Item2, MainWindow.answer.Iduser)));// Дописать время последнего сообщения
+                writer.Write(JsonSerializer.Serialize(new Check_message_request(timeFirstLastMessage.Time_last_message, MainWindow.answer.Iduser)));// Дописать время последнего сообщения
             }
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             using (Stream stream = response.GetResponseStream())
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    MainWindow.messages = IMainFunction.FromJson<CheckMessResponse>(reader.ReadToEnd()); 
+                    MainWindow.messages = IMainFunction.FromJson<CheckMessResponse>(reader.ReadToEnd());
                 }
             }
             if (MainWindow.messages.Mess_list.Count != 0)
             {
-                timeFirstLastMessage.Item2 = MainWindow.messages.Mess_list[0].TimeSend;
+                timeFirstLastMessage.Time_last_message = MainWindow.messages.Mess_list[0].TimeSend;
             }
         }
 
@@ -202,7 +195,7 @@ namespace Messenger
             MessageField.Children.Add(mainGrid);
 
         }
-        
+
         internal void Draw(Message _message)
         {
             Grid mainGrid = new Grid()
@@ -272,7 +265,7 @@ namespace Messenger
 
         private void MessageBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (MessageBox.Text== "Type your Message...")
+            if (MessageBox.Text == "Type your Message...")
             {
                 MessageBox.Clear();
             }
@@ -281,12 +274,12 @@ namespace Messenger
 
         private void HistoryMess_Click(object sender, RoutedEventArgs e)
         {
-            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/oldmes/{MainWindow.answer.Chatnames_Id[0].Item1}");
+            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/oldmes/{MainWindow.answer.Chatnames_Id[0].ID_chat}");
             request.Method = "POST";
             request.ContentType = "application/json";
             using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
             {
-                writer.Write(new Check_message_request(new DateTime(), MainWindow.answer.Iduser).ToJson());
+                writer.Write(new Check_message_request( timeFirstLastMessage.Time_first_message, MainWindow.answer.Iduser).ToJson());
             }
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             using (Stream stream = response.GetResponseStream())
@@ -297,15 +290,23 @@ namespace Messenger
                     MainWindow.messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                 }
             }
-            
+
             foreach (Message mess in MainWindow.messages.Mess_list)
             {
                 Draw(mess);
             }
-            timeFirstLastMessage.Item1 = MainWindow.messages.Mess_list[0].TimeSend;
-            timeFirstLastMessage.Item2 = MainWindow.messages.Mess_list[^1].TimeSend;
-            
+            timeFirstLastMessage.Time_first_message = MainWindow.messages.Mess_list[0].TimeSend;
+        }
+        private void Chat_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Authentication/singout");
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+            {
+                writer.Write(new Sing_out_request(MainWindow.answer.Nicknameuser, MainWindow.answer.Chatnames_Id.ConvertAll(mem => mem.ID_chat), DateTime.Now.ToUniversalTime()).ToJson());
+            }
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
         }
     }
-
 }

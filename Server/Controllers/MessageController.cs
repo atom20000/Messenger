@@ -81,7 +81,7 @@ namespace Server.Controllers
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message"));
                 List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json")))).ToList<string>();///////
                 List<Message> buff_mes = new List<Message>();
-                int index = directory_name_files.IndexOf(directory_name_files.Find(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, nam.LastIndexOf(".json"))).Date == getrequestmessage.Last_mess.Date));
+                int index = directory_name_files.IndexOf(directory_name_files.Find(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json"))).Date == getrequestmessage.Last_mess.Date));
                 for (int i = index; Mess_list.Count != 10; i--)
                 {
                     try

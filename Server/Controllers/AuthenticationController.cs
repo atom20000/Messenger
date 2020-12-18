@@ -95,19 +95,22 @@ namespace Server.Controllers
         public IActionResult Sing_out([FromBody] Sing_out_request out_request)
         {
             logger.LogInformation("Sign out starts");
-            //Напиши проверку что пользователь есть в этих беседах
             foreach (int chat in out_request.Chats_Id)
             {
-                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), "history_message"));
-                if (!System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json")))
-                    IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json"),
-                        new List<Message>() { new Message(out_request.Sing_Out_Time, $"{out_request.NickName} offline", -9999, "Ttechnical information") });
-                else
+                if (Chat.FromJsonFile(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), $"{chat.ToString()}.json")).Members.Exists(mem => mem == Program.NickName[out_request.NickName]))
                 {
-                    List<Message> Mess_list = IMainFunction.FromJsonFile<List<Message>>(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json")); 
-                    Mess_list.Add(new Message(out_request.Sing_Out_Time, $"{out_request.NickName} offline", -9999, "Ttechnical information"));
-                    IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json"), Mess_list);
+                    Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), "history_message"));
+                    if (!System.IO.File.Exists(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json")))
+                        IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json"),
+                            new List<Message>() { new Message(out_request.Sing_Out_Time, $"{out_request.NickName} offline", -9999, "Ttechnical information") });
+                    else
+                    {
+                        List<Message> Mess_list = IMainFunction.FromJsonFile<List<Message>>(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json"));
+                        Mess_list.Add(new Message(out_request.Sing_Out_Time, $"{out_request.NickName} offline", -9999, "Ttechnical information"));
+                        IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json"), Mess_list);
+                    }
                 }
+                else logger.LogInformation("This user belongs to chat");
             }
             logger.LogInformation("Sign out complete");
             return Ok("vse ok");

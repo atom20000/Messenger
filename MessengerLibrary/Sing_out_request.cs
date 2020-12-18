@@ -17,6 +17,7 @@ namespace MessengerLibrary
             this.Chats_Id = chats_id;
             this.Sing_Out_Time = sing_out_time;
         }
+        public Sing_out_request(){ }
         /// <summary>
         /// Преобразует объект в Json
         /// </summary>

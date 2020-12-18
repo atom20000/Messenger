@@ -78,7 +78,7 @@ namespace MessengerApp
                     chat _chat = new chat();
                     this.Close();
                     _chat.Show();
-                    request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].Item1}");
+                    request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].ID_chat}");
                     request.Method = "POST";
                     request.ContentType = "application/json";
                     using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
@@ -99,8 +99,8 @@ namespace MessengerApp
                     {
                         _chat.Draw(mess);
                     }
-                    _chat.timeFirstLastMessage.Item1 = messages.Mess_list[0].TimeSend;
-                    _chat.timeFirstLastMessage.Item2 = messages.Mess_list[^1].TimeSend;
+                    _chat.timeFirstLastMessage.Time_first_message = messages.Mess_list[0].TimeSend;
+                    _chat.timeFirstLastMessage.Time_last_message = messages.Mess_list[^1].TimeSend;
                     _chat.Check_new_message();
                 }
             }
@@ -161,7 +161,7 @@ namespace MessengerApp
                             chat _chat = new chat();
                             _chat.Show();
                             this.Close();
-                            request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].Item1}");
+                            request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].ID_chat}");
                             request.Method = "POST";
                             request.ContentType = "application/json";
                             using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
@@ -182,8 +182,8 @@ namespace MessengerApp
                             {
                                 _chat.Draw(mess);
                             }
-                            _chat.timeFirstLastMessage.Item1 = messages.Mess_list[0].TimeSend;
-                            _chat.timeFirstLastMessage.Item2 = messages.Mess_list[^1].TimeSend;
+                            _chat.timeFirstLastMessage.Time_first_message = messages.Mess_list[0].TimeSend;
+                            _chat.timeFirstLastMessage.Time_last_message = messages.Mess_list[^1].TimeSend;
                             _chat.Check_new_message();
                             
                         }
