@@ -91,12 +91,18 @@ namespace Messenger
                     {
 
                     Count.Text = $"{ MainWindow.messages.Count_members.ToString()} members";
+                    bool bottom=Scroll.VerticalOffset==Scroll.ScrollableHeight;
+                        
 
                     foreach (Message mess in MainWindow.messages.Mess_list)
                         {
                             Draw(mess);
+                            MessageBox.Text = "";
                         }
-
+                        if (bottom)
+                        {
+                            Scroll.ScrollToBottom();
+                        }
                     });
                     Task.Delay(MainWindow.config.Update_rate);
 
@@ -130,8 +136,71 @@ namespace Messenger
         }
 
         private void GridDraw(Message _message)
-        {    
-        
+        {
+            Grid mainGrid = new Grid()
+            {
+                Margin = new Thickness(10)
+            };
+            StackPanel imageStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+
+            };
+            StackPanel nameStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal
+            };
+            StackPanel nameTimeStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Vertical,
+            };
+            Image icon = new Image()
+            {
+
+            };
+            TextBlock nickname = new TextBlock()
+            {
+                Text = _message.Sender_Nickname,
+                Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
+                FontSize = 14,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(5, 0, 0, 0),
+
+            };
+            TextBox message = new TextBox()
+            {
+                Width = 300,
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                Text = _message.Text,
+                IsEnabled = false,
+                FontSize = 26,
+                Background = Brushes.Transparent,
+                Foreground = Brushes.Aqua,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(49, 46, 43)),
+
+            };
+            TextBox time = new TextBox()
+            {
+                IsEnabled = false,
+                Text = _message.TimeSend.ToLocalTime().ToString("HH:mm"),
+                FontSize = 14,
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(49, 46, 43)),
+                Background = Brushes.Transparent,
+                Margin = new Thickness(10, 0, 10, 0),
+            };
+
+            nameStackPanel.Children.Add(nickname);
+            nameStackPanel.Children.Add(time);
+            nameTimeStackPanel.Children.Add(nameStackPanel);
+            nameTimeStackPanel.Children.Add(message);
+            imageStackPanel.Children.Add(icon);
+            imageStackPanel.Children.Add(nameTimeStackPanel);
+            mainGrid.Children.Add(imageStackPanel);
+            MessageField.Children.Add(mainGrid);
+
         }
         
         internal void Draw(Message _message)
@@ -208,6 +277,34 @@ namespace Messenger
                 MessageBox.Clear();
             }
 
+        }
+
+        private void HistoryMess_Click(object sender, RoutedEventArgs e)
+        {
+            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/oldmes/{MainWindow.answer.Chatnames_Id[0].Item1}");
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+            {
+                writer.Write(new Check_message_request(new DateTime(), MainWindow.answer.Iduser).ToJson());
+            }
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            using (Stream stream = response.GetResponseStream())
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string a = reader.ReadToEnd();
+                    MainWindow.messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                }
+            }
+            
+            foreach (Message mess in MainWindow.messages.Mess_list)
+            {
+                Draw(mess);
+            }
+            timeFirstLastMessage.Item1 = MainWindow.messages.Mess_list[0].TimeSend;
+            timeFirstLastMessage.Item2 = MainWindow.messages.Mess_list[^1].TimeSend;
+            
         }
     }
 

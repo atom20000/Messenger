@@ -116,16 +116,18 @@
             </StackPanel>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" Grid.Column="1" Background="#312E2B">
+        <ScrollViewer x:Name="Scroll" Grid.Row="1" Grid.Column="1" Background="#312E2B">
             <StackPanel x:Name="MessageField" Orientation="Vertical">
-               
+                <Button x:Name="HistoryMess" HorizontalAlignment="Center" VerticalAlignment="Top" Background="#312E2B" BorderBrush="#312E2B" Click="HistoryMess_Click">
+                    <TextBlock Text="Add message" Background="#312E2B" Foreground="#79AFEF"></TextBlock>
+                </Button>
             </StackPanel>
         </ScrollViewer>
         <Grid Grid.Row="1" Grid.Column="0" Background="#3A3631">
             <TextBox Style="{StaticResource MessageBox}" Height="55" Margin="40, 20, 40, 20" VerticalAlignment="Top" Background="#BABABA" FontSize="26"></TextBox>
         </Grid>
         <Grid Grid.Row="2" Grid.Column="1" Background="#312E2B">
-            <TextBox x:Name="MessageBox" Text="Type your Message..." Style="{StaticResource MessageBox}" Width="1000" BorderBrush="#312E2B" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="26" Background="#312E2B" Margin="20" PreviewKeyDown="MessageBox_PreviewKeyDown" MouseDoubleClick="MessageBox_MouseDoubleClick"/>
+            <TextBox x:Name="MessageBox"  Text="Type your Message..." Style="{StaticResource MessageBox}" Width="1000" BorderBrush="#312E2B" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="26" Background="#312E2B" Margin="20" PreviewKeyDown="MessageBox_PreviewKeyDown" MouseDoubleClick="MessageBox_MouseDoubleClick"/>
             <Button
             x:Name="MessageClick"
             HorizontalAlignment="Right" 
