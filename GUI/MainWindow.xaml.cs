@@ -48,7 +48,7 @@ namespace MessengerApp
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            if(Login.Text=="Sign in")
+            if (Login.Text == "Sign in")
             {
                 HttpWebRequest request = WebRequest.CreateHttp($"{config.Url_server}/api/Authentication/auth");
                 request.Method = "POST";
@@ -59,13 +59,13 @@ namespace MessengerApp
                     writer.Write(JsonSerializer.Serialize(new List<string>() { LoginBox.Text, PasswordBox.Password }));
                 }
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                
+
                 using (Stream stream = response.GetResponseStream())
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
                         string a = reader.ReadToEnd();
-                        answer = JsonSerializer.Deserialize<Authanswer>(a, new JsonSerializerOptions() {PropertyNameCaseInsensitive=true});
+                        answer = JsonSerializer.Deserialize<Authanswer>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                     }
                 }
                 if ((answer.Nicknameuser == "Login not found") || (answer.Nicknameuser == "Password invalid"))
@@ -83,7 +83,7 @@ namespace MessengerApp
                     request.ContentType = "application/json";
                     using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
                     {
-                        writer.Write(new Check_message_request(new DateTime(),answer.Iduser).ToJson());
+                        writer.Write(new Check_message_request(new DateTime(), answer.Iduser).ToJson());
                     }
                     response = (HttpWebResponse)request.GetResponse();
                     using (Stream stream = response.GetResponseStream())
@@ -95,30 +95,37 @@ namespace MessengerApp
                         }
                     }
                     _chat.Count.Text = $"{ messages.Count_members.ToString()} members";
-                    foreach (Message mess in MainWindow.messages.Mess_list)
+                    foreach (Message mess in messages.Mess_list)
                     {
                         _chat.Draw(mess);
                     }
                     _chat.timeFirstLastMessage.Time_first_message = messages.Mess_list[0].TimeSend;
                     _chat.timeFirstLastMessage.Time_last_message = messages.Mess_list[^1].TimeSend;
+                    if (CheckBox.IsChecked==true)
+                    {
+                        config.Login = LoginBox.Text;
+                        config.Password = PasswordBox.Password;
+                        config.Auth_in_file = true;
+                        IMainFunction.ToJsonFile("config.json", config);
+                    }
                     _chat.Check_new_message();
                 }
             }
-            if(Login.Text == "Sign up")
+            if  (Login.Text == "Sign up")
             {
                 HttpWebRequest request = WebRequest.CreateHttp($"{config.Url_server}/api/Authentication/reg");
                 request.Method = "POST";
                 request.ContentType = "application/json";
                 //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                if((LoginBox.Text!="Login") && (PasswordBox.Password != "Password"))
+                if  ((LoginBox.Text  !=  "Login") && (PasswordBox.Password != "Password"))
                 {
                     using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
                     {
                         writer.Write(JsonSerializer.Serialize(new User(LoginBox.Text, PasswordBox.Password, NicknameBox.Text)));
                     }
                     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                    
-                    using (Stream stream = response.GetResponseStream())
+
+                using (Stream stream = response.GetResponseStream())
                     {
                         using (StreamReader reader = new StreamReader(stream))
                         {
@@ -157,8 +164,8 @@ namespace MessengerApp
                             WarningBlock.Text = answer.Nicknameuser;
                         }
                         else
-                        {                           
-                            chat _chat = new chat();
+                        {
+                        chat _chat = new chat();
                             _chat.Show();
                             this.Close();
                             request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].ID_chat}");
@@ -178,15 +185,22 @@ namespace MessengerApp
                                 }
                             }
                             _chat.Count.Text = $"{ messages.Count_members.ToString()} members";
-                            foreach (Message mess in MainWindow.messages.Mess_list)
+                            foreach (Message mess in messages.Mess_list)
                             {
                                 _chat.Draw(mess);
                             }
                             _chat.timeFirstLastMessage.Time_first_message = messages.Mess_list[0].TimeSend;
                             _chat.timeFirstLastMessage.Time_last_message = messages.Mess_list[^1].TimeSend;
+                            if (CheckBox.IsChecked == true)
+                            {
+                                config.Login = LoginBox.Text;
+                                config.Password = PasswordBox.Password;
+                                config.Auth_in_file = true;
+                                IMainFunction.ToJsonFile("config.json", config);
+                            }
                             _chat.Check_new_message();
-                            
-                        }
+
+                    }
                     }
                 }
                 else
@@ -194,7 +208,8 @@ namespace MessengerApp
                     WarningBlock.Visibility = Visibility.Visible;
                     WarningBlock.Text = "Michalich zverb";
                 }
-            }           
+            }
+            
         }
         private void SignupButton_Click(object sender, RoutedEventArgs e)
         {
@@ -240,7 +255,7 @@ namespace MessengerApp
         {
             try
             {
-                config = JsonSerializer.Deserialize<Config>(File.ReadAllText("config.json"));
+                config = IMainFunction.FromJsonFile<Config>("config.json");
 
             }
             catch
@@ -255,7 +270,57 @@ namespace MessengerApp
                     Size_vertical = 1080,
                     Update_rate = 1000
                 };
-                File.WriteAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "config.json"), config.ToString());
+                IMainFunction.ToJsonFile("config.json", config);
+            }
+            if (config.Auth_in_file)
+            {
+                HttpWebRequest request = WebRequest.CreateHttp($"{config.Url_server}/api/Authentication/auth");
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(JsonSerializer.Serialize(new List<string>() { config.Login, config.Password }));
+                }
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                using (Stream stream = response.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string a = reader.ReadToEnd();
+                        answer = JsonSerializer.Deserialize<Authanswer>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                    }
+                }
+                 
+                chat _chat = new chat();
+                this.Close();
+                _chat.Show();
+                request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].ID_chat}");
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(new Check_message_request(new DateTime(), answer.Iduser).ToJson());
+                }
+                response = (HttpWebResponse)request.GetResponse();
+                using (Stream stream = response.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string a = reader.ReadToEnd();
+                        messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                    }
+                }
+                _chat.Count.Text = $"{ messages.Count_members.ToString()} members";
+                foreach (Message mess in messages.Mess_list)
+                {
+                    _chat.Draw(mess);
+                }
+                _chat.timeFirstLastMessage.Time_first_message = messages.Mess_list[0].TimeSend;
+                _chat.timeFirstLastMessage.Time_last_message = messages.Mess_list[^1].TimeSend;
+                _chat.Check_new_message();
+                
             }
         }
     }

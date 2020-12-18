@@ -86,7 +86,10 @@
                 <Button Content="Enter" Style="{StaticResource ButtonBase}" Name="LoginButton" Click="LoginButton_Click" IsDefault="True"/>
                 <Button Content="Sign in" Style="{StaticResource ButtonBase}" Name="SigninButton" Visibility="Collapsed" Click="SigninButton_Click" Background="#312E2B" BorderBrush="#312E2B"/>
                 <Button Content="Sign up" Style="{StaticResource ButtonBase}" Name="SignupButton" Click="SignupButton_Click" Background="#312E2B" BorderBrush="#312E2B"/>
-                <TextBlock Text="HUIIIIIIII" Name="WarningBlock" Style="{StaticResource WarningBlock}" Visibility="Hidden"/>
+                <CheckBox Background="#BABABA"  x:Name="CheckBox"  FontSize="14"  HorizontalAlignment="Center" VerticalAlignment="Center"  Visibility="Visible">
+                    <TextBlock Text="Remember me" Foreground="White" VerticalAlignment="Center" ></TextBlock>
+                </CheckBox>
+                <TextBlock Name="WarningBlock" Style="{StaticResource WarningBlock}" Visibility="Hidden"/>
             </StackPanel>
         </Border>
 

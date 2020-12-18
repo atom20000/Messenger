@@ -85,13 +85,13 @@ namespace Messenger
             {
                 while (true)
                 {
-                    Message_request();
+                    CheckMessResponse New_Message = Message_request();
                     MessageField.Dispatcher.Invoke(() =>
                     {
-                        Count.Text = $"{ MainWindow.messages.Count_members.ToString()} members";
+                        Count.Text = $"{ New_Message.Count_members.ToString()} members";
                         bool bottom = Scroll.VerticalOffset == Scroll.ScrollableHeight;
 
-                        foreach (Message mess in MainWindow.messages.Mess_list)
+                        foreach (Message mess in New_Message.Mess_list)
                         {
                             Draw(mess);
                             MessageBox.Text = "";
@@ -105,8 +105,9 @@ namespace Messenger
                 }
             });
         }
-        internal void Message_request()
+        internal CheckMessResponse Message_request()
         {
+            CheckMessResponse New_Message;
             HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/checknewmes/{MainWindow.answer.Chatnames_Id[0].ID_chat}"); // id чата, метод должен понимать из какого чата его запустили 
             request.Method = "POST";
             request.ContentType = "application/json";
@@ -119,13 +120,14 @@ namespace Messenger
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    MainWindow.messages = IMainFunction.FromJson<CheckMessResponse>(reader.ReadToEnd());
+                    New_Message = IMainFunction.FromJson<CheckMessResponse>(reader.ReadToEnd());
                 }
             }
-            if (MainWindow.messages.Mess_list.Count != 0)
+            if (New_Message.Mess_list.Count != 0)
             {
-                timeFirstLastMessage.Time_last_message = MainWindow.messages.Mess_list[0].TimeSend;
+                timeFirstLastMessage.Time_last_message = New_Message.Mess_list[0].TimeSend;
             }
+            return New_Message;
         }
 
         private void GridDraw(Message _message)
@@ -192,7 +194,7 @@ namespace Messenger
             imageStackPanel.Children.Add(icon);
             imageStackPanel.Children.Add(nameTimeStackPanel);
             mainGrid.Children.Add(imageStackPanel);
-            MessageField.Children.Add(mainGrid);
+            MessageField.Children.Insert(1, mainGrid);
 
         }
 
@@ -261,6 +263,7 @@ namespace Messenger
             imageStackPanel.Children.Add(nameTimeStackPanel);
             mainGrid.Children.Add(imageStackPanel);
             MessageField.Children.Add(mainGrid);
+            
         }
 
         private void MessageBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -290,12 +293,17 @@ namespace Messenger
                     MainWindow.messages = JsonSerializer.Deserialize<CheckMessResponse>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                 }
             }
-
+            MainWindow.messages.Mess_list.Reverse();
             foreach (Message mess in MainWindow.messages.Mess_list)
             {
-                Draw(mess);
+                GridDraw(mess);
             }
-            timeFirstLastMessage.Time_first_message = MainWindow.messages.Mess_list[0].TimeSend;
+            MainWindow.messages.Mess_list.Reverse();
+            if (MainWindow.messages.Mess_list.Count!=0)
+            {
+                timeFirstLastMessage.Time_first_message = MainWindow.messages.Mess_list[0].TimeSend;
+            }
+            
         }
         private void Chat_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
