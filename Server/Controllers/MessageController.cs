@@ -63,7 +63,7 @@ namespace Server.Controllers
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message"));
                 List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json")))).ToList<string>();///////
                 List<Message> buff_mes = new List<Message>();
-                for (int i=1;Mess_list.Count!=10;i++)
+                for (int i=1;Mess_list.Count!=10 || i>directory_name_files.Count;i++)
                 {
                     try
                     {
@@ -82,7 +82,7 @@ namespace Server.Controllers
                 List<string> directory_name_files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message")).OrderBy(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json")))).ToList<string>();///////
                 List<Message> buff_mes = new List<Message>();
                 int index = directory_name_files.IndexOf(directory_name_files.Find(nam => DateTime.Parse(Path.GetFileName(nam).Substring(0, Path.GetFileName(nam).LastIndexOf(".json"))).Date == getrequestmessage.Last_mess.Date));
-                for (int i = index; Mess_list.Count != 10; i--)
+                for (int i = index; Mess_list.Count != 10 || i<0; i--)
                 {
                     try
                     {
@@ -93,7 +93,7 @@ namespace Server.Controllers
                         break;
                     }
 
-                    Mess_list.InsertRange(0,buff_mes.FindAll(mes => mes.TimeSend.TimeOfDay < getrequestmessage.Last_mess.TimeOfDay).TakeLast(10 - Mess_list.Count));
+                    Mess_list.InsertRange(0, buff_mes.FindAll(mes => (mes.TimeSend.TimeOfDay < getrequestmessage.Last_mess.TimeOfDay) || (mes.TimeSend.Date < getrequestmessage.Last_mess.Date)).TakeLast(10 - Mess_list.Count));
                 }
             }
             logger.LogInformation($"Sample old message comlete. Send {Mess_list.Count} message");
