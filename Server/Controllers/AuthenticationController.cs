@@ -25,7 +25,7 @@ namespace Server.Controllers
         [Produces("application/json")]
         public IActionResult Reg([FromBody] User user)
         {
-            logger.LogInformation("Registration starts");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Registration starts");
             if (Program.LoginID.ContainsKey(user.Login))
             {
                 logger.LogInformation("Registration interrupted because this login is registered");
@@ -34,7 +34,7 @@ namespace Server.Controllers
 
             if (Program.NickName.Keys.ToList().Exists(us => us == user.Nickname)) 
             {
-                logger.LogInformation("Registration interrupted because this nickname is busy");
+                logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Registration interrupted because this nickname is busy");
                 return Ok(new Authanswer("This nickname is busy")); 
             }
             if(Program.LoginID.Count==0) user.IdUser = 0;  
@@ -50,17 +50,17 @@ namespace Server.Controllers
             Program.NickName.Add(user.Nickname, user.IdUser);
             Program.LoginID.Add(user.Login, user.IdUser);
             user.ToJsonFile(Path.Combine(Program.config["User_directory"], $"{user.IdUser}.json"));
-            logger.LogInformation("Registration complete");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Registration complete");
             return Ok(new Authanswer("Davai cherez auth"));
         }
         [HttpPost("auth")]
         [Produces("application/json")]
         public IActionResult Auth([FromBody] List<string> request)
         {
-            logger.LogInformation("Authorization starts");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Authorization starts");
             if (!Program.LoginID.ContainsKey(request[0]))
             {
-                logger.LogInformation("Authorization interrupted because login not found");
+                logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Authorization interrupted because login not found");
                 return Ok(new Authanswer("Login not found"));
             } 
             int iduser = Program.LoginID[request[0]];
@@ -84,17 +84,17 @@ namespace Server.Controllers
                         IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{DateTime.Now.ToUniversalTime().ToShortDateString()}.json"), Mess_list);
                     }
                 }
-                logger.LogInformation("Authorization complete");
+                logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Authorization complete");
                 return Ok(new Authanswer(user.IdUser, user.Nickname, chatnames_id));
              }
-            logger.LogInformation("Authorization interrupted because password invalid");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Authorization interrupted because password invalid");
             return Ok(new Authanswer("Password invalid"));
         }
         [HttpPost("singout")]
         [Produces("application/json")]
         public IActionResult Sing_out([FromBody] Sing_out_request out_request)
         {
-            logger.LogInformation("Sign out starts");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Sign out starts");
             foreach (int chat in out_request.Chats_Id)
             {
                 if (Chat.FromJsonFile(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], chat.ToString(), $"{chat.ToString()}.json")).Members.Exists(mem => mem == Program.NickName[out_request.NickName]))
@@ -110,9 +110,9 @@ namespace Server.Controllers
                         IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], chat.ToString(), "history_message", $"{out_request.Sing_Out_Time.ToShortDateString()}.json"), Mess_list);
                     }
                 }
-                else logger.LogInformation("This user belongs to chat");
+                else logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "This user belongs to chat");
             }
-            logger.LogInformation("Sign out complete");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Sign out complete");
             return Ok("vse ok");
         }
     }

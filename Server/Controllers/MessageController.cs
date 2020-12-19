@@ -24,12 +24,12 @@ namespace Server.Controllers
         [Produces("application/json")]
         public IActionResult Checkmes(int id_chat, [FromBody] Check_message_request getrequestmessage)
         {
-            logger.LogInformation("Check new message started");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Check new message started");
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString()));
             Chat chat = Chat.FromJsonFile(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), $"{id_chat}.json"));
             if (!chat.Members.Exists(mem => mem== getrequestmessage.IdUser))
             {
-                logger.LogInformation("Chech new message interrupted because this user doesn't belong this chat");
+                logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Chech new message interrupted because this user doesn't belong this chat");
                 return Ok("Ne obmanevai mena, teba net v etom chate");
             }
             List<Message> Mess_list = new List<Message>();
@@ -42,19 +42,19 @@ namespace Server.Controllers
                     Mess_list.InsertRange(0,from mes in mess_list where mes.TimeSend.TimeOfDay > getrequestmessage.Last_mess.TimeOfDay select mes);
                 }                         
             }
-            logger.LogInformation($"Check new message comlete. Send {Mess_list.Count} message");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + $"Check new message comlete. Send {Mess_list.Count} message");
             return Ok(new CheckMessResponse(Mess_list, chat.Members.Count));
         }
         [HttpPost("oldmes/{id_chat}")]
         [Produces("application/json")]
         public IActionResult Oldmes (int id_chat, [FromBody] Check_message_request getrequestmessage)
         {
-            logger.LogInformation("Sample old message started");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Sample old message started");
             Directory.CreateDirectory(Path.Combine(Program.config["Chats_directory"], id_chat.ToString()));
             Chat chat = Chat.FromJsonFile(Path.Combine(Program.config["Chats_directory"], id_chat.ToString(), $"{id_chat}.json"));
             if (!chat.Members.Exists(mem => mem == getrequestmessage.IdUser))
             {
-                logger.LogInformation("Chech new message interrupted because this user doesn't belong this chat");
+                logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Chech new message interrupted because this user doesn't belong this chat");
                 return Ok("Ne obmanevai mena, teba net v etom chate");
             }
             List<Message> Mess_list = new List<Message>();
@@ -96,21 +96,21 @@ namespace Server.Controllers
                     Mess_list.InsertRange(0, buff_mes.FindAll(mes => (mes.TimeSend.TimeOfDay < getrequestmessage.Last_mess.TimeOfDay) || (mes.TimeSend.Date < getrequestmessage.Last_mess.Date)).TakeLast(10 - Mess_list.Count));
                 }
             }
-            logger.LogInformation($"Sample old message comlete. Send {Mess_list.Count} message");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + $"Sample old message comlete. Send {Mess_list.Count} message");
             return Ok(new CheckMessResponse(Mess_list, chat.Members.Count));
         }
         [HttpPost("sendmes/{id_chat}")]
         public IActionResult Sendmes(int id_chat, [FromBody]Message message)
         {
-            logger.LogInformation("Send message started");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Send message started");
             if (!Program.ChatsID.ContainsKey(id_chat)) 
             {
-                logger.LogInformation("Send message interrupted because this chat is not found");
+                logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Send message interrupted because this chat is not found");
                 return Ok("Not found this chat");
             }
             if (!Chat.FromJsonFile(Path.Combine(Program.config["Chats_directory"],id_chat.ToString(),$"{id_chat}.json")).Members.Exists(mem => mem == message.Sender))
             {
-                logger.LogInformation("Send message interrupted because this user not belong this chat");
+                logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Send message interrupted because this user not belong this chat");
                 return Ok("Po moemu ti ne otcuda");
             }
             Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), Program.config["Chats_directory"], id_chat.ToString(), "history_message"));    
@@ -119,14 +119,14 @@ namespace Server.Controllers
             List<Message> Mess_list = IMainFunction.FromJsonFile<List<Message>>(Path.Combine( Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json"));
             Mess_list.Add(message);
             IMainFunction.ToJsonFile(Path.Combine(Program.config["Chats_directory"], id_chat.ToString(), "history_message", $"{message.TimeSend.ToShortDateString()}.json"), Mess_list);
-            logger.LogInformation("Send message complete");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Send message complete");
             return Ok("Ok pochta doshla");
         }
         [HttpPost("createchat")]
         [Produces("application/json")]
         public IActionResult CreateChat([FromBody] Create_chat_struct request_create)
         {
-            logger.LogInformation("Create chat started");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Create chat started");
             Chat chat = new Chat() {
                 NameChat = request_create.NameChat,
                 Members = new List<int>()
@@ -143,7 +143,7 @@ namespace Server.Controllers
                 us.Chats.Add(chat.IdChat);
                 us.ToJsonFile(Path.Combine(Program.config["User_directory"], $"{mem}.json"));
             }
-            logger.LogInformation("Create chat comlete");
+            logger.LogInformation($"[{ DateTime.Now.ToString()}]: " + "Create chat comlete");
             return Ok(chat);
         }
     }
