@@ -252,7 +252,7 @@ namespace MessengerApp
                 Auth_Window.Width = config.Size_horizontal;
                 _chat.Width = config.Size_horizontal;
             }
-            if (config.Size_vertical <= Auth_Window.MaxHeight && config.Size_vertical >= Auth_Window.MinWidth)
+            if (config.Size_vertical <= Auth_Window.MaxHeight && config.Size_vertical >= Auth_Window.MinHeight)
             {
                 Auth_Window.Height = config.Size_vertical;
                 _chat.Height = config.Size_vertical;

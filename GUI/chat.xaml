@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GUI"
         mc:Ignorable="d"
-        Title="LTP'" Height="1080" Width="1920" MaxHeight="4320" MaxWidth="7680" MinHeight="768" MinWidth="1024" Background="#222" Foreground="#f6f6f6" WindowState="Maximized" WindowStartupLocation="CenterScreen" Closing="Chat_Closing">
+        Title="LTP'" Height="1080" Width="1920" MaxHeight="4320" MaxWidth="7680" MinHeight="768" MinWidth="1024" Background="#222" Foreground="#f6f6f6" WindowStartupLocation="CenterScreen" Closing="Chat_Closing">
     <Window.Resources>
         <Path x:Key="IconTriangle" x:Shared="False" Stretch="Uniform" Data="M50.25,133.5 L49.75,158.25 76,147.25 z" Fill="#79AFEF"  Stroke="Black"/>
         <Path x:Key="IconSettings" x:Shared="False" Stretch="Uniform" Data="m22.683 9.394-1.88-.239c-.155-.477-.346-.937-.569-1.374l1.161-1.495c.47-.605.415-1.459-.122-1.979l-1.575-1.575c-.525-.542-1.379-.596-1.985-.127l-1.493 1.161c-.437-.223-.897-.414-1.375-.569l-.239-1.877c-.09-.753-.729-1.32-1.486-1.32h-2.24c-.757 0-1.396.567-1.486 1.317l-.239 1.88c-.478.155-.938.345-1.375.569l-1.494-1.161c-.604-.469-1.458-.415-1.979.122l-1.575 1.574c-.542.526-.597 1.38-.127 1.986l1.161 1.494c-.224.437-.414.897-.569 1.374l-1.877.239c-.753.09-1.32.729-1.32 1.486v2.24c0 .757.567 1.396 1.317 1.486l1.88.239c.155.477.346.937.569 1.374l-1.161 1.495c-.47.605-.415 1.459.122 1.979l1.575 1.575c.526.541 1.379.595 1.985.126l1.494-1.161c.437.224.897.415 1.374.569l.239 1.876c.09.755.729 1.322 1.486 1.322h2.24c.757 0 1.396-.567 1.486-1.317l.239-1.88c.477-.155.937-.346 1.374-.569l1.495 1.161c.605.47 1.459.415 1.979-.122l1.575-1.575c.542-.526.597-1.379.127-1.985l-1.161-1.494c.224-.437.415-.897.569-1.374l1.876-.239c.753-.09 1.32-.729 1.32-1.486v-2.24c.001-.757-.566-1.396-1.316-1.486zm-10.683 7.606c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z" Fill="#79AFEF"  Stroke="Black" Margin="-8,-2,10,-10"/>
@@ -14,6 +14,10 @@
 			C8.27,0,2,6.27,2,14c0,3.832,1.547,7.297,4.043,9.828L6,32l6.703-4.434C13.766,27.828,14.859,28,16,28c7.73,0,14-6.27,14-14
 			S23.73,0,16,0L16,0z" Fill="#79AFEF"  Stroke="Black"/>
         <Path x:Key="IconSuper" Width="80" Height="80" Margin="5" x:Shared="False" Stretch="Uniform" Data="m317.730469 0c-175.386719 0-317.5625 132.65625-317.5625 296.292969 0 92.660156 45.585937 175.394531 116.972656 229.722656v113.984375l106.574219-60.589844c29.714844 8.558594 61.289062 13.183594 94.015625 13.183594 175.394531 0 317.558593-132.667969 317.558593-296.296875 0-163.640625-142.164062-296.296875-317.558593-296.296875zm32.125 396.46875-81.4375-85.511719-155.859375 85.511719 171.253906-181.328125 82.199219 84.019531 154.128906-84.019531zm0 0" Fill="#79AFEF"  Stroke="Black"/>
+        <Path x:Key="IconExit" Width="60" Height="60" Margin="5" x:Shared="False" Stretch="Uniform" Data="M505.664,240.861L376.388,113.286c-8.335-8.25-21.815-8.143-30.065,0.213s-8.165,21.815,0.213,30.065l92.385,91.173
+			H191.362c-11.758,0-21.262,9.504-21.262,21.262c0,11.758,9.504,21.263,21.262,21.263h247.559l-92.385,91.173
+			c-8.377,8.25-8.441,21.709-0.213,30.065c4.167,4.21,9.653,6.336,15.139,6.336c5.401,0,10.801-2.041,14.926-6.124l129.276-127.575
+			c4.04-3.997,6.336-9.441,6.336-15.139C512,250.302,509.725,244.88,505.664,240.861z" Fill="#79AFEF"  Stroke="Black"/>
         <Style x:Key="Screen">
             <Style.Setters>
                 <Setter Property="Border.Visibility" Value="Hidden" />
@@ -104,7 +108,7 @@
                     <ContentControl Width="80" Height="60" Margin="4" Content="{StaticResource IconGroup}"/>
                 </StackPanel>
             </Button>
-            <TextBlock Text ="LTR'" Style="{StaticResource HeaderBlock}" Margin="20" FontSize="35" Background="#474442"/>
+            <TextBlock Text ="LTR'" VerticalAlignment="Center" Style="{StaticResource HeaderBlock}" Margin="20" FontSize="35" Background="#474442"/>
         </Grid>
         <Grid Grid.Row="0" Grid.Column="1" Background="#474442">
             <StackPanel Orientation="Horizontal" x:Name="Super" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#474442">
@@ -114,6 +118,13 @@
                     <TextBlock x:Name="Count" FontSize="15" Margin="3" Foreground="Aqua" VerticalAlignment="Bottom"/>
                 </StackPanel>
             </StackPanel>
+
+            <Button x:Name="Exit" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 0, 35, 0"  Background="#474442" BorderBrush="#474442" Click="ExitClick">
+                <StackPanel Orientation="Vertical">
+                    <ContentControl Content="{StaticResource IconExit}"/>
+                    <TextBlock Text="Exit" FontSize="16" Foreground="Aqua" HorizontalAlignment="Center" Margin="5"/>
+                </StackPanel>
+            </Button>
         </Grid>
 
         <ScrollViewer x:Name="Scroll" Grid.Row="1" Grid.Column="1" Background="#312E2B">

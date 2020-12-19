@@ -163,7 +163,7 @@ namespace Messenger
             };
             TextBox message = new TextBox()
             {
-                Width = 300,
+                Width = 450,
                 AcceptsReturn = true,
                 TextWrapping = TextWrapping.Wrap,
                 Text = _message.Text,
@@ -231,7 +231,7 @@ namespace Messenger
             };
             TextBox message = new TextBox()
             {
-                Width = 300,
+                Width = 450,
                 AcceptsReturn = true,
                 TextWrapping = TextWrapping.Wrap,
                 Text = _message.Text,
@@ -322,6 +322,20 @@ namespace Messenger
             {
                 MessageBox.Text = "Type your Message...";
             }
+        }
+
+        private void ExitClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+            MainWindow.config.Auth_in_file = false;
+            MainWindow.config.Login = null;
+            MainWindow.config.Password = null;
+            IMainFunction.ToJsonFile(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "config.json"), MainWindow.config);
+            string path = Application.ResourceAssembly.Location;
+            path = path.Remove(path.Length - 3, 3) + "exe";
+            System.Diagnostics.Process.Start(path);
+            
+            
         }
     }
 }
