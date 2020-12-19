@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MessengerApp"
         mc:Ignorable="d"
         x:Name="Auth_Window"
-        Title="LTR'" Height="1080" Width="1920" MaxHeight="4320" MaxWidth="7680" MinHeight="768" MinWidth="1024" Background="#222" Foreground="#f6f6f6" WindowState="Maximized" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+        Title="LTR'" Height="1080" Width="1920" MaxHeight="4320"  MaxWidth="7680" MinHeight="768" MinWidth="1024" Background="#222" Foreground="#f6f6f6"  WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Window.Resources>
         <Style x:Key="Screen">
             <Style.Setters>
