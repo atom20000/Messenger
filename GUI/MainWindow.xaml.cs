@@ -45,6 +45,7 @@ namespace MessengerApp
         public static Config config;
         internal static Authanswer answer;
         internal static CheckMessResponse messages;
+        internal chat _chat = new chat();
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
@@ -75,7 +76,6 @@ namespace MessengerApp
                 }
                 else
                 {
-                    chat _chat = new chat();
                     this.Close();
                     _chat.Show();
                     request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].ID_chat}");
@@ -165,7 +165,6 @@ namespace MessengerApp
                         }
                         else
                         {
-                        chat _chat = new chat();
                             _chat.Show();
                             this.Close();
                             request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].ID_chat}");
@@ -200,7 +199,7 @@ namespace MessengerApp
                             }
                             _chat.Check_new_message();
 
-                    }
+                        }
                     }
                 }
                 else
@@ -226,31 +225,6 @@ namespace MessengerApp
             SigninButton.Visibility = Visibility.Collapsed;
             SignupButton.Visibility = Visibility.Visible;
         }
-
-        private void MouseDoubleLog(object sender, RoutedEventArgs e)
-        {
-            if (LoginBox.Text=="Login")
-            {
-                LoginBox.Clear();
-            }
-        }
-
-        private void MouseDoublePass(object sender, RoutedEventArgs e)
-        {
-            if (PasswordBox.Password == "Password")
-            {
-                PasswordBox.Clear();
-            }
-        }
-
-        private void MouseDoubleNick(object sender, RoutedEventArgs e)
-        {
-            if (NicknameBox.Text=="Nickname")
-            {
-                NicknameBox.Clear();
-            }
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
@@ -271,6 +245,17 @@ namespace MessengerApp
                     Update_rate = 1000
                 };
                 IMainFunction.ToJsonFile("config.json", config);
+
+            }
+            if (config.Size_horizontal <= Auth_Window.MaxWidth && config.Size_horizontal>=Auth_Window.MinWidth)
+            {
+                Auth_Window.Width = config.Size_horizontal;
+                _chat.Width = config.Size_horizontal;
+            }
+            if (config.Size_vertical <= Auth_Window.MaxHeight && config.Size_vertical >= Auth_Window.MinWidth)
+            {
+                Auth_Window.Height = config.Size_vertical;
+                _chat.Height = config.Size_vertical;
             }
             if (config.Auth_in_file)
             {
@@ -292,8 +277,6 @@ namespace MessengerApp
                         answer = JsonSerializer.Deserialize<Authanswer>(a, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                     }
                 }
-                 
-                chat _chat = new chat();
                 this.Close();
                 _chat.Show();
                 request = WebRequest.CreateHttp($"{config.Url_server}/api/Message/oldmes/{answer.Chatnames_Id[0].ID_chat}");
@@ -321,6 +304,54 @@ namespace MessengerApp
                 _chat.timeFirstLastMessage.Time_last_message = messages.Mess_list[^1].TimeSend;
                 _chat.Check_new_message();
                 
+            }
+        }
+
+        private void NicknameBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (NicknameBox.Text == "Nickname")
+            {
+                NicknameBox.Clear();
+            }
+        }
+
+        private void NicknameBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (NicknameBox.Text == "")
+            {
+                NicknameBox.Text = "Nickname";
+            }
+        }
+
+        private void LoginBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (LoginBox.Text == "")
+            {
+                LoginBox.Text = "Login";
+            }
+        }
+
+        private void LoginBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (LoginBox.Text == "Login")
+            {
+                LoginBox.Clear();
+            }
+        }
+
+        private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (PasswordBox.Password == "Password")
+            {
+                PasswordBox.Clear();
+            }
+        }
+
+        private void PasswordBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (PasswordBox.Password == "")
+            {
+                PasswordBox.Password = "Password";
             }
         }
     }

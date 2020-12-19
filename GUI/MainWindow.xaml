@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MessengerApp"
         mc:Ignorable="d"
-        Title="Messenger" Height="1080" Width="1920" MaxHeight="1080" MaxWidth="1920" MinHeight="768" MinWidth="1024" Background="#222" Foreground="#f6f6f6" WindowState="Maximized" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+        x:Name="Auth_Window"
+        Title="LTR'" Height="1080" Width="1920" MaxHeight="4320" MaxWidth="7680" MinHeight="768" MinWidth="1024" Background="#222" Foreground="#f6f6f6" WindowState="Maximized" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Window.Resources>
         <Style x:Key="Screen">
             <Style.Setters>
@@ -80,9 +81,9 @@
         <Border Style="{StaticResource Screen}" Name="LoginScreen" Visibility="Visible">
             <StackPanel Style="{StaticResource LoginPanel}">
                 <TextBlock Text="Sign in" Style="{StaticResource HeaderBlock}" Name="Login" />
-                <TextBox Text="Nickname" Style="{StaticResource TextBoxBase}" Name="NicknameBox" MouseDoubleClick="MouseDoubleNick" Foreground="#28F6F6F6" Visibility="Collapsed"/>
-                <TextBox Text="Login" Style="{StaticResource TextBoxBase}" Name="LoginBox" MouseDoubleClick="MouseDoubleLog" Foreground="#28F6F6F6"/>
-                <PasswordBox Password="Password" Style="{StaticResource TextBoxBase}" Name="PasswordBox" MouseDoubleClick="MouseDoublePass" Foreground="#28F6F6F6"/>
+                <TextBox Text="Nickname" Style="{StaticResource TextBoxBase}" Name="NicknameBox" Foreground="#28F6F6F6" Visibility="Collapsed" GotFocus="NicknameBox_GotFocus" LostFocus="NicknameBox_LostFocus"/>
+                <TextBox Text="Login" Style="{StaticResource TextBoxBase}" Name="LoginBox" Foreground="#28F6F6F6" LostFocus="LoginBox_LostFocus" GotFocus="LoginBox_GotFocus"/>
+                <PasswordBox Password="Password" Style="{StaticResource TextBoxBase}" Name="PasswordBox" Foreground="#28F6F6F6" GotFocus="PasswordBox_GotFocus" LostFocus="PasswordBox_LostFocus"/>
                 <Button Content="Enter" Style="{StaticResource ButtonBase}" Name="LoginButton" Click="LoginButton_Click" IsDefault="True"/>
                 <Button Content="Sign in" Style="{StaticResource ButtonBase}" Name="SigninButton" Visibility="Collapsed" Click="SigninButton_Click" Background="#312E2B" BorderBrush="#312E2B"/>
                 <Button Content="Sign up" Style="{StaticResource ButtonBase}" Name="SignupButton" Click="SignupButton_Click" Background="#312E2B" BorderBrush="#312E2B"/>

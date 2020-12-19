@@ -44,25 +44,24 @@ namespace Messenger
         internal (DateTime Time_first_message, DateTime Time_last_message) timeFirstLastMessage;
         private void ButtonMessage_Click(object sender, RoutedEventArgs e)
         {
-            string ans;
-            HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/sendmes/{MainWindow.answer.Chatnames_Id[0].ID_chat}"); // id чата, метод должен понимать из какого чата его запустили 
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
-            {//Beta здесь был
-                writer.Write(JsonSerializer.Serialize(new Message(DateTime.Now.ToUniversalTime(), MessageBox.Text, MainWindow.answer.Iduser, MainWindow.answer.Nicknameuser)));
-            }
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (Stream stream = response.GetResponseStream())
+            string ans = "";
+            while(ans!= "Ok pochta doshla") 
             {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    ans = reader.ReadToEnd();
+                HttpWebRequest request = WebRequest.CreateHttp($"{MainWindow.config.Url_server}/api/Message/sendmes/{MainWindow.answer.Chatnames_Id[0].ID_chat}"); // id чата, метод должен понимать из какого чата его запустили 
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {//Beta здесь был
+                    writer.Write(JsonSerializer.Serialize(new Message(DateTime.Now.ToUniversalTime(), MessageBox.Text, MainWindow.answer.Iduser, MainWindow.answer.Nicknameuser)));
                 }
-            }
-            if (ans == "Ok pochta doshla")
-            {
-
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                using (Stream stream = response.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        ans = reader.ReadToEnd();
+                    }
+                }
             }
 
         }
@@ -266,7 +265,7 @@ namespace Messenger
             
         }
 
-        private void MessageBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void MessageBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Text == "Type your Message...")
             {
@@ -315,6 +314,14 @@ namespace Messenger
                 writer.Write(new Sing_out_request(MainWindow.answer.Nicknameuser, MainWindow.answer.Chatnames_Id.ConvertAll(mem => mem.ID_chat), DateTime.Now.ToUniversalTime()).ToJson());
             }
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+        }
+
+        private void MessageBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Text == "")
+            {
+                MessageBox.Text = "Type your Message...";
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>ak0OVX0kHW0.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
